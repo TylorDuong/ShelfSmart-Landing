@@ -37,6 +37,9 @@ import {
 } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 
+const LOGO_ICON = "https://storage.googleapis.com/ab-studio-project-assets/zgx5flq27f2azwhjjd5djh/input_file_0.png";
+const LOGO_TEXT = "https://storage.googleapis.com/ab-studio-project-assets/zgx5flq27f2azwhjjd5djh/input_file_1.png";
+
 const StaticIcon = ({ Icon, top, left, size }: { Icon: any, top: string, left: string, size: number, key?: React.Key }) => {
   return (
     <div
@@ -95,10 +98,8 @@ const Navbar = () => {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md py-3 shadow-sm" : "bg-transparent py-6"}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <a href="#hero" className="flex items-center gap-2 cursor-pointer group">
-          <div className="w-10 h-10 bg-green-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-green-primary/20 group-hover:scale-105 transition-transform">
-            <Leaf size={24} />
-          </div>
-          <span className="text-2xl font-display font-bold tracking-tight text-text-dark group-hover:text-green-primary transition-colors">ShelfSmart</span>
+          <img src={LOGO_ICON} alt="ShelfSmart Icon" className="w-10 h-10 object-contain group-hover:scale-105 transition-transform" referrerPolicy="no-referrer" />
+          <img src={LOGO_TEXT} alt="ShelfSmart" className="h-8 object-contain group-hover:opacity-80 transition-opacity" referrerPolicy="no-referrer" />
         </a>
 
         <div className="hidden md:flex items-center gap-8">
@@ -108,7 +109,7 @@ const Navbar = () => {
             </a>
           ))}
           <button className="bg-green-primary text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-green-primary/90 transition-all shadow-lg shadow-green-primary/20 active:scale-95">
-            Contact Us
+            Join our Waitlist
           </button>
         </div>
 
@@ -137,7 +138,7 @@ const Navbar = () => {
                 </a>
               ))}
               <button className="bg-green-primary text-white px-6 py-3 rounded-xl font-semibold w-full mt-2">
-                Contact Us
+                Join our Waitlist
               </button>
             </div>
           </motion.div>
@@ -152,9 +153,10 @@ const DashboardPreview = () => {
     <div className="bg-[#F8FAF9] rounded-[1.5rem] overflow-hidden shadow-2xl border border-gray-100 flex h-[400px] md:h-[500px] w-full max-w-[700px] mx-auto scale-[0.75] sm:scale-90 lg:scale-100 origin-center transition-transform duration-500">
       {/* Sidebar */}
       <div className="w-40 bg-white border-r border-gray-100 p-4 hidden lg:flex flex-col gap-5">
-        <div className="flex flex-col gap-0.5">
-          <div className="text-green-primary font-display font-bold text-sm">ShelfSmart</div>
-          <div className="text-[8px] text-text-muted font-medium uppercase tracking-wider">Intelligent Curator</div>
+        <div className="flex flex-col gap-1">
+          <img src={LOGO_ICON} alt="Icon" className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
+          <img src={LOGO_TEXT} alt="Logo" className="h-3 object-contain" referrerPolicy="no-referrer" />
+          <div className="text-[6px] text-text-muted font-medium uppercase tracking-wider mt-1">Intelligent Curator</div>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -361,7 +363,7 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button className="bg-coral text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-coral/90 transition-all shadow-xl shadow-coral/20 flex items-center justify-center gap-2 group">
-              Get a Custom Quote
+              Join our Waitlist
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -573,10 +575,8 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-green-primary rounded-lg flex items-center justify-center text-white">
-                <Leaf size={18} />
-              </div>
-              <span className="text-xl font-display font-bold tracking-tight text-text-dark">ShelfSmart</span>
+              <img src={LOGO_ICON} alt="ShelfSmart Icon" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
+              <img src={LOGO_TEXT} alt="ShelfSmart" className="h-6 object-contain" referrerPolicy="no-referrer" />
             </div>
             <p className="text-text-muted max-w-sm leading-relaxed">
               The intelligent inventory platform for the modern kitchen. Reduce waste, save time, and maximize profits with AI-driven insights.
@@ -669,7 +669,7 @@ export default function App() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-coral text-white px-10 py-5 rounded-full text-xl font-bold hover:bg-coral/90 transition-all shadow-2xl shadow-coral/20 flex items-center justify-center gap-3 group">
-                Contact Our Team
+                Join our Waitlist
                 <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
