@@ -21,6 +21,31 @@ import logoText from "../../Images/logo-text.png";
 export default function Home() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [previewPath, setPreviewPath] = useState("/");
+
+  const previewTaglines: Record<string, { label: string; text: string }> = {
+    "/": {
+      label: "Dashboard",
+      text: "Forecasted guests, critical SKUs, and live agent signals in one glance.",
+    },
+    "/inventory": {
+      label: "Inventory",
+      text: "Ledger view with stock depth, reorder points, and depletion signals.",
+    },
+    "/suppliers": {
+      label: "Suppliers",
+      text: "Vendor reliability, inbound coverage, and market intelligence.",
+    },
+    "/analytics": {
+      label: "Analytics",
+      text: "Influence breakdowns and demand velocity projections.",
+    },
+    "/settings": {
+      label: "Settings",
+      text: "Company profile, integrations, and API access controls.",
+    },
+  };
+  const activeTagline = previewTaglines[previewPath] || previewTaglines["/"];
 
   useEffect(() => {
     // Reveal on scroll
@@ -186,7 +211,7 @@ export default function Home() {
      HERO
      ========================================================== */}
 <section className="hero">
-  <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '64px', alignItems: 'center' }}>
+  <div className="container" style={{ display: 'grid', gridTemplateColumns: '0.95fr 1.25fr', gap: '48px', alignItems: 'start' }}>
     <div className="hero-text-col">
       <span className="eyebrow rise d1">
         <span className="dot"></span>
@@ -221,9 +246,13 @@ export default function Home() {
       </div>
     </div>
 
-    <div className="hero-visual-col rise d5" style={{ perspective: '1600px' }} id="preview">
+    <div className="hero-visual-col rise d5" style={{ perspective: '1600px', justifySelf: 'start', width: '100%' }} id="preview">
       <div style={{ transform: 'rotateY(-8deg) rotateX(4deg)', transition: 'transform 0.4s ease, box-shadow 0.4s ease', transformStyle: 'preserve-3d' }} onMouseOver={e => e.currentTarget.style.transform = 'rotateY(0) rotateX(0)'} onMouseOut={e => e.currentTarget.style.transform = 'rotateY(-8deg) rotateX(4deg)'}>
-        <LiveDashboardPreview />
+        <LiveDashboardPreview onPathChange={setPreviewPath} />
+      </div>
+      <div key={previewPath} className="preview-tagline">
+        <span className="preview-tagline__label">{activeTagline.label}</span>
+        <span className="preview-tagline__text">{activeTagline.text}</span>
       </div>
     </div>
   </div>

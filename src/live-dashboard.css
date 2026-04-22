@@ -231,6 +231,14 @@
   to { opacity: 1; transform: none; }
 }
 
+.dash-preview .dash-preview-page {
+  animation: dp-pagefade 0.45s ease both;
+}
+@keyframes dp-pagefade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* ── Scrollbar ── */
 .dash-preview .scroll-hide::-webkit-scrollbar {
   display: none;

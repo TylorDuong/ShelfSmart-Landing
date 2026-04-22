@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Icon from './Icon';
 import logoImg from '../../Images/logo-icon.png';
 import textImg from '../../Images/logo-text.png';
@@ -78,6 +78,61 @@ const ChevronExpand = ({ expanded }: { expanded: boolean }) => (
     <path d="M6 9l6 6 6-6" />
   </svg>
 );
+
+type AnimatedNumberProps = {
+  value: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+};
+
+const useAnimatedNumber = (value: number, duration: number) => {
+  const safeValue = Number.isFinite(value) ? value : 0;
+  const [display, setDisplay] = useState(safeValue);
+  const displayRef = useRef(safeValue);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    displayRef.current = display;
+  }, [display]);
+
+  useEffect(() => {
+    const from = displayRef.current;
+    const to = Number.isFinite(value) ? value : 0;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (from === to) {
+      setDisplay(to);
+      return;
+    }
+
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const next = from + (to - from) * eased;
+      setDisplay(next);
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [value, duration]);
+
+  return display;
+};
+
+const AnimatedNumber = ({ value, decimals = 0, prefix = "", suffix = "", duration = 650 }: AnimatedNumberProps) => {
+  const animated = useAnimatedNumber(value, duration);
+  const safe = Number.isFinite(animated) ? animated : 0;
+  const raw = decimals > 0 ? safe.toFixed(decimals) : Math.round(safe).toString();
+  const cleaned = raw === "-0" ? "0" : raw;
+  return <>{prefix}{cleaned}{suffix}</>;
+};
 
 const buildSparkPath = (values: number[], width: number, height: number, pad = 6) => {
   if (!values || values.length === 0) return "";
@@ -244,6 +299,11 @@ const days = useMemo(() => {
     return orders.filter((o) => o.status === "Pending");
   }, [orders, subTab]);
 
+  const arrivingCount = useMemo(
+    () => orders.filter((o) => o.status === "In Transit").length,
+    [orders]
+  );
+
   /* ── Chart geometry ── */
   const chartW = 640, chartH = 180, chartPad = 20;
   const chartMax = days.length > 0 ? Math.max(...days.map((d) => d.guests)) + 40 : 200;
@@ -358,7 +418,7 @@ const days = useMemo(() => {
             </button>
           </div>
           <div className="num" style={{ fontSize: 56, color: "#f4efe3", lineHeight: 1, marginTop: "auto" }}>
-            {todayGuests}
+            <AnimatedNumber value={todayGuests} />
           </div>
           <div className="flex items-center justify-between mt-2">
             <div className="mono" style={{ fontSize: 11, color: "#b4ab96" }}>
@@ -367,7 +427,7 @@ const days = useMemo(() => {
             </div>
             <span className="chip chip-accent">
               <Icon name={todayDelta >= 0 ? "up" : "down"} s={11} />
-              {todayDelta > 0 ? "+" : ""}{todayDelta}%
+              <AnimatedNumber value={todayDelta} prefix={todayDelta > 0 ? "+" : ""} suffix="%" />
             </span>
           </div>
           <svg viewBox="0 0 200 32" style={{ width: "100%", height: 32, marginTop: 10 }}>
@@ -408,7 +468,7 @@ const days = useMemo(() => {
             </div>
           </div>
           <div className="num" style={{ fontSize: 56, marginTop: "auto", color: "var(--color-danger)" }}>
-            {criticalItems.length}
+            <AnimatedNumber value={criticalItems.length} />
           </div>
           <div style={{ fontSize: 12, color: "var(--color-ink-soft)", marginTop: 4 }}>
             {criticalItems.filter((i) => i.current_stock < i.reorder_point * 0.5).length} urgent
@@ -439,7 +499,7 @@ const days = useMemo(() => {
             </div>
           </div>
           <div className="num" style={{ fontSize: 56, marginTop: "auto" }}>
-            {orders.filter((o) => o.status === "In Transit").length || "—"}
+            {arrivingCount > 0 ? <AnimatedNumber value={arrivingCount} /> : "—"}
           </div>
           <div style={{ fontSize: 12, color: "var(--color-ink-soft)", marginTop: 4 }}>On schedule</div>
           <svg viewBox="0 0 100 24" style={{ width: "100%", height: 24, marginTop: 10 }}>
@@ -480,11 +540,11 @@ const days = useMemo(() => {
                   : "var(--color-ink)",
             }}
           >
-            {compositeScore > 0 ? "+" : ""}{compositeScore}%
+            <AnimatedNumber value={compositeScore} prefix={compositeScore > 0 ? "+" : ""} suffix="%" />
           </div>
           <div style={{ fontSize: 12, color: "var(--color-ink-soft)", marginTop: 4 }}>
             <span className="num" style={{ fontSize: 13, color: "var(--color-ink)" }}>
-              {skusBelowROPByEOD}
+              <AnimatedNumber value={skusBelowROPByEOD} />
             </span>{" "}
             SKUs → ROP by EOD
           </div>
@@ -655,7 +715,7 @@ const days = useMemo(() => {
             <div>
               <div className="eyebrow mb-1">Inbound · next 48 hours</div>
               <div className="display mb-5" style={{ fontSize: 22 }}>
-                {orders.filter((o) => o.status === "In Transit").length} shipments en route
+                <AnimatedNumber value={arrivingCount} /> shipments en route
               </div>
               <div className="flex flex-col gap-3">
                 {orders
@@ -1638,7 +1698,7 @@ function SuppliersInner() {
     { label: "In transit", value: inTransit, note: "shipments live", icon: "truck" },
     { label: "Arriving today", value: arrivingToday, note: "scheduled drops", icon: "clock" },
     { label: "Pending", value: pending, note: "needs approval", icon: "alert" },
-    { label: "Delivery scheduler", value: "3", note: "slots open", icon: "cal" },
+    { label: "Delivery scheduler", value: 3, note: "slots open", icon: "cal" },
   ];
 
   const gridColumns = "2.2fr 1fr 1fr 1fr 0.8fr";
@@ -1672,7 +1732,9 @@ function SuppliersInner() {
               <div className="eyebrow">{kpi.label}</div>
               <Icon name={kpi.icon} s={14} />
             </div>
-            <div className="num" style={{ fontSize: 32, marginTop: 8 }}>{kpi.value}</div>
+            <div className="num" style={{ fontSize: 32, marginTop: 8 }}>
+              <AnimatedNumber value={kpi.value} />
+            </div>
             <div className="mono" style={{ fontSize: 10.5, color: "var(--color-mute)" }}>{kpi.note}</div>
           </div>
         ))}
@@ -1781,7 +1843,9 @@ function SuppliersInner() {
           <div className="card-cream p-5" style={{ borderRadius: 18 }}>
             <div className="eyebrow mb-1">Supplier scorecard</div>
             <div className="display" style={{ fontSize: 20 }}>Reliability index</div>
-            <div className="num" style={{ fontSize: 34, marginTop: 8 }}>{avgOnTime}%</div>
+            <div className="num" style={{ fontSize: 34, marginTop: 8 }}>
+              <AnimatedNumber value={avgOnTime} suffix="%" />
+            </div>
             <div className="mono" style={{ fontSize: 10.5, color: "var(--color-mute)" }}>
               Based on last 30 inbound shipments
             </div>
@@ -2131,8 +2195,12 @@ function SettingsInner() {
 }
 
 
-export default function LiveDashboardPreview() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+type LiveDashboardPreviewProps = {
+  onPathChange?: (path: string) => void;
+};
+
+export default function LiveDashboardPreview({ onPathChange }: LiveDashboardPreviewProps) {
+  const isCollapsed = true;
   const [activePath, setActivePath] = useState('/');
 
   const now = new Date();
@@ -2144,8 +2212,24 @@ export default function LiveDashboardPreview() {
     year: 'numeric',
   });
 
+  useEffect(() => {
+    const delay = activePath === '/' ? 9500 : 4500;
+    const timeout = setTimeout(() => {
+      setActivePath((prev) => {
+        const idx = navItems.findIndex((n) => n.path === prev);
+        const next = navItems[(idx + 1) % navItems.length]?.path || navItems[0].path;
+        return next;
+      });
+    }, delay);
+    return () => clearTimeout(timeout);
+  }, [activePath]);
+
+  useEffect(() => {
+    if (onPathChange) onPathChange(activePath);
+  }, [activePath, onPathChange]);
+
   return (
-    <div className="dash-preview flex" style={{ zoom: 0.75, background: 'var(--color-canvas)', height: '700px', overflow: 'hidden', textAlign: 'left', borderRadius: '16px', border: '1px solid var(--color-line)', boxShadow: '0 20px 40px -24px rgba(14,18,16,.18)' }}>
+    <div className="dash-preview flex" style={{ zoom: 0.7, width: '100%', maxWidth: 1040, background: 'var(--color-canvas)', height: '700px', overflow: 'hidden', textAlign: 'left', borderRadius: '16px', border: '1px solid var(--color-line)', boxShadow: '0 20px 40px -24px rgba(14,18,16,.18)' }}>
       {/* Sidebar */}
       <aside
         className="h-full flex flex-col z-50 transition-all duration-300"
@@ -2214,18 +2298,6 @@ export default function LiveDashboardPreview() {
           })}
         </nav>
 
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="btn btn-ghost mb-4"
-          style={{
-            justifyContent: 'center',
-            padding: '8px',
-            marginTop: 8,
-          }}
-        >
-          <Icon name={isCollapsed ? 'chevron-right' : 'chevron-left'} s={15} />
-          {!isCollapsed && <span style={{ fontSize: 11 }}>Collapse</span>}
-        </button>
       </aside>
 
       {/* Main Content */}
@@ -2294,11 +2366,13 @@ export default function LiveDashboardPreview() {
         </header>
 
         <main className="thin-scroll" style={{ padding: '16px 32px 40px 16px', overflowY: 'auto', flex: 1 }}>
-          {activePath === '/' && <DashboardInner />}
-          {activePath === '/inventory' && <InventoryInner />}
-          {activePath === '/suppliers' && <SuppliersInner />}
-          {activePath === '/analytics' && <AnalyticsInner />}
-          {activePath === '/settings' && <SettingsInner />}
+          <div key={activePath} className="dash-preview-page">
+            {activePath === '/' && <DashboardInner />}
+            {activePath === '/inventory' && <InventoryInner />}
+            {activePath === '/suppliers' && <SuppliersInner />}
+            {activePath === '/analytics' && <AnalyticsInner />}
+            {activePath === '/settings' && <SettingsInner />}
+          </div>
         </main>
       </div>
     </div>
