@@ -268,3 +268,8 @@
   font-size: 38px !important;
   margin: 0 !important;
 }
+
+/* ── Responsive zoom for the preview container ── */
+.ldp-outer { zoom: 0.70; }
+@media (max-width: 1023px) { .ldp-outer { zoom: 0.60; } }
+@media (max-width: 640px)  { .ldp-outer { zoom: 0.44; } }

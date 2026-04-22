@@ -350,7 +350,7 @@ export default function Home() {
      HERO
      ========================================================== */}
       <section className="hero">
-        <div className="container hero-grid">
+        <div className="container hero-grid" style={{ position: 'relative', zIndex: 1 }}>
           <div className="hero-text-col">
             <span className="eyebrow rise d1">
               <span className="dot"></span>
