@@ -159,23 +159,63 @@ export default function Home() {
     };
     window.addEventListener('scroll', handleNavShadow, { passive: true });
 
-    // Tilt preview
+    // Tilt preview — both scroll and hover tilt live on the outer frame so the border glow follows
     const frame = document.querySelector('.preview-frame') as HTMLElement;
     let ticking = false;
+    let isHovered = false;
+    let lastScrollX = 0;
+    let leaveTimer: ReturnType<typeof setTimeout>;
+    const MAX_TILT = 6;
+    // Buffer prevents oscillation at edges: card must be this many px past the border before leave fires
+    const EDGE_BUFFER = 80;
+
+    const applyTilt = (rotateX: number, rotateY: number, withTransition = false) => {
+      if (!frame) return;
+      if (withTransition) frame.style.transition = 'transform 0.5s cubic-bezier(.2,.8,.2,1)';
+      frame.style.transform = `perspective(1600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    };
+
     const handleTilt = () => {
-      if (!ticking && frame) {
+      if (isHovered || !frame) return;
+      if (!ticking) {
         window.requestAnimationFrame(() => {
           const r = frame.getBoundingClientRect();
           const vh = window.innerHeight;
           const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / vh));
-          frame.style.transform = `perspective(1600px) rotateX(${-p * 1.8}deg)`;
+          lastScrollX = -p * 1.8;
+          applyTilt(lastScrollX, -8);
           ticking = false;
         });
         ticking = true;
       }
     };
+
+    // Single window-level handler avoids enter/leave oscillation at tilted edges
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!frame) return;
+      const rect = frame.getBoundingClientRect();
+      const inside =
+        e.clientX >= rect.left - EDGE_BUFFER && e.clientX <= rect.right + EDGE_BUFFER &&
+        e.clientY >= rect.top - EDGE_BUFFER && e.clientY <= rect.bottom + EDGE_BUFFER;
+
+      if (inside) {
+        clearTimeout(leaveTimer);
+        if (!isHovered) isHovered = true;
+        frame.style.transition = '';
+        const normX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const normY = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        applyTilt(-normY * MAX_TILT, normX * MAX_TILT);
+      } else if (isHovered) {
+        isHovered = false;
+        applyTilt(lastScrollX, -8, true);
+        leaveTimer = setTimeout(() => { if (frame) frame.style.transition = ''; }, 500);
+      }
+    };
+
     if (frame && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      applyTilt(0, -8); // initial resting tilt before first scroll
       window.addEventListener('scroll', handleTilt, { passive: true });
+      window.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
 
     return () => {
@@ -184,6 +224,8 @@ export default function Home() {
       window.removeEventListener('scroll', handleScrollNav);
       window.removeEventListener('scroll', handleNavShadow);
       window.removeEventListener('scroll', handleTilt);
+      clearTimeout(leaveTimer);
+      window.removeEventListener('pointermove', handlePointerMove);
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.removeEventListener('click', handleAnchorClick);
       });
@@ -279,7 +321,7 @@ export default function Home() {
      HERO
      ========================================================== */}
       <section className="hero">
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '0.82fr 1.38fr', gap: '40px', alignItems: 'start' }}>
+        <div className="container hero-grid">
           <div className="hero-text-col">
             <span className="eyebrow rise d1">
               <span className="dot"></span>
@@ -348,14 +390,10 @@ export default function Home() {
               backgroundColor="var(--paper)"
               coneSpread={28}
               colors={['#3DA35D', '#96E072', '#17b26a']}
+              glowReach={120}
               animated
             >
-              <div
-                className="preview-tilt"
-                style={{ transform: 'rotateY(-8deg) rotateX(4deg)', transition: 'transform 0.4s ease, box-shadow 0.4s ease', transformStyle: 'preserve-3d' }}
-                onMouseOver={e => e.currentTarget.style.transform = 'rotateY(0) rotateX(0)'}
-                onMouseOut={e => e.currentTarget.style.transform = 'rotateY(-8deg) rotateX(4deg)'}
-              >
+              <div className="preview-tilt">
                 <LiveDashboardPreview onPathChange={setPreviewPath} />
               </div>
             </BorderGlow>

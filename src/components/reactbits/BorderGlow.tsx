@@ -14,6 +14,7 @@ type BorderGlowProps = {
   animated?: boolean;
   colors?: string[];
   fillOpacity?: number;
+  glowReach?: number; // px outside the card that still trigger the glow
 };
 
 function parseHSL(hslStr: string) {
@@ -86,35 +87,18 @@ export default function BorderGlow({
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
   fillOpacity = 0.5,
+  glowReach = 0,
 }: BorderGlowProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const getCenterOfElement = useCallback((el: HTMLElement) => {
-    const { width, height } = el.getBoundingClientRect();
-    return [width / 2, height / 2];
-  }, []);
-
-  const getEdgeProximity = useCallback((el: HTMLElement, x: number, y: number) => {
-    const [cx, cy] = getCenterOfElement(el);
-    const dx = x - cx;
-    const dy = y - cy;
-    let kx = Infinity;
-    let ky = Infinity;
-    if (dx !== 0) kx = cx / Math.abs(dx);
-    if (dy !== 0) ky = cy / Math.abs(dy);
-    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
-  }, [getCenterOfElement]);
-
-  const getCursorAngle = useCallback((el: HTMLElement, x: number, y: number) => {
-    const [cx, cy] = getCenterOfElement(el);
+  const getCursorAngle = useCallback((cx: number, cy: number, x: number, y: number) => {
     const dx = x - cx;
     const dy = y - cy;
     if (dx === 0 && dy === 0) return 0;
-    const radians = Math.atan2(dy, dx);
-    let degrees = radians * (180 / Math.PI) + 90;
+    let degrees = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
     if (degrees < 0) degrees += 360;
     return degrees;
-  }, [getCenterOfElement]);
+  }, []);
 
   const handlePointerMove = useCallback((e: PointerEvent) => {
     const card = cardRef.current;
@@ -122,11 +106,38 @@ export default function BorderGlow({
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const edge = getEdgeProximity(card, x, y);
-    const angle = getCursorAngle(card, x, y);
-    card.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(3)}`);
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+
+    // Distance outside card on each axis (0 when inside)
+    const ox = Math.max(0, -x, x - rect.width);
+    const oy = Math.max(0, -y, y - rect.height);
+    const outsideDist = Math.sqrt(ox * ox + oy * oy);
+
+    let proximity: number;
+    if (outsideDist === 0) {
+      // Inside: use center-to-edge ratio
+      const dx = x - cx;
+      const dy = y - cy;
+      const kx = dx !== 0 ? cx / Math.abs(dx) : Infinity;
+      const ky = dy !== 0 ? cy / Math.abs(dy) : Infinity;
+      proximity = Math.min(1, 1 / Math.min(kx, ky)) * 100;
+    } else if (glowReach > 0 && outsideDist <= glowReach) {
+      // Outside but within reach: fade from 100 at edge to 0 at glowReach
+      proximity = (1 - outsideDist / glowReach) * 100;
+    } else {
+      return; // too far — let CSS transition fade it out naturally
+    }
+
+    const angle = getCursorAngle(cx, cy, x, y);
+    card.style.setProperty('--edge-proximity', proximity.toFixed(3));
     card.style.setProperty('--cursor-angle', `${angle.toFixed(3)}deg`);
-  }, [getEdgeProximity, getCursorAngle]);
+  }, [getCursorAngle, glowReach]);
+
+  useEffect(() => {
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    return () => window.removeEventListener('pointermove', handlePointerMove);
+  }, [handlePointerMove]);
 
   useEffect(() => {
     if (!animated || !cardRef.current) return;
@@ -165,7 +176,6 @@ export default function BorderGlow({
   return (
     <div
       ref={cardRef}
-      onPointerMove={handlePointerMove}
       className={`border-glow-card ${className}`}
       style={style}
     >
