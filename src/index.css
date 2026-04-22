@@ -312,12 +312,14 @@
   gap: 0.28em;
   min-width: 23ch;
 }
-/* Rotating adjective — underline scales naturally with the animated text width */
+/* Rotating adjective — green highlight pill with white text */
 .ss2 .rotating-adjective {
   display: inline-flex !important;
-  align-items: baseline;
-  border-bottom: 0.08em solid currentColor;
-  padding-bottom: 0.04em;
+  align-items: center;
+  background: var(--green);
+  color: #ffffff;
+  padding: 0.06em 0.26em 0.1em;
+  border-radius: 0.18em;
 }
 /* Clip characters during slide-in/out animation */
 .ss2 .rotating-split-level {
