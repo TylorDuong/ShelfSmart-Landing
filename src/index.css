@@ -280,6 +280,11 @@
 
 /* Hero */
 .ss2 .hero { padding: 80px 0 40px; position: relative; }
+.ss2 .hero-grid { display: grid; grid-template-columns: 0.82fr 1.38fr; gap: 40px; align-items: start; }
+@media (max-width: 900px) {
+  .ss2 .hero-grid { grid-template-columns: 1fr; }
+  .ss2 .hero-visual-col { width: 100% !important; perspective: none !important; }
+}
 .ss2 .eyebrow {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-mono-new); font-size: 11.5px;
@@ -563,36 +568,11 @@
   margin-top: 28px; position: relative; overflow: hidden; border-block: 1px solid var(--line-soft);
   padding: 18px 0; color: var(--ink-soft-new);
 }
-.ss2 .trust-item,
-.ss2 .trust-parallax,
-.ss2 .trust-scroller { width: 100%; }
-.ss2 .trust-scroller {
-  display: flex;
-  width: max-content;
-  animation: ss2-trust-scroll 28s linear infinite;
-  will-change: transform;
-}
-.ss2 .trust-track {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  width: max-content;
-  white-space: nowrap;
-  padding-right: 24px;
-}
-.ss2 .trust-pill {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 10px 16px; border-radius: 999px;
-  border: 1px solid var(--line-soft); background: rgba(255,255,255,.55);
-  box-shadow: 0 10px 24px -18px rgba(14,18,16,.18);
-}
-.ss2 .trust-pill span { font-family: var(--font-serif); font-style: italic; font-size: 24px; letter-spacing: -0.02em; }
-.ss2 .trust-pill span:nth-child(2n) { font-family: var(--font-sans-new); font-style: normal; font-weight: 600; letter-spacing: -0.03em; }
-.ss2 .trust-pill span:nth-child(3n) { font-family: var(--font-sans-new); font-style: normal; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; font-size: 14px; }
-@keyframes ss2-trust-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-}
+.ss2 .trust-parallax { position: relative; overflow: hidden; width: 100%; }
+.ss2 .trust-scroller { display: flex; white-space: nowrap; will-change: transform; width: max-content; }
+.ss2 .trust-copy { display: inline-flex; align-items: center; gap: 20px; padding-right: 20px; flex-shrink: 0; }
+.ss2 .trust-pill { display: inline-flex; align-items: center; flex-shrink: 0; color: var(--ink-soft-new); }
+.ss2 .trust-sep { color: var(--line-soft); font-size: 18px; flex-shrink: 0; }
 
 .ss2 .trust-integrations {
   margin-top: 20px;

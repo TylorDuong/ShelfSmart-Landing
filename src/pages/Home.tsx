@@ -7,6 +7,7 @@ import CountUp from "../components/reactbits/CountUp";
 import LogoLoop from "../components/reactbits/LogoLoop";
 import RotatingText from "../components/reactbits/RotatingText";
 import ScrollVelocity from "../components/reactbits/ScrollVelocity";
+import { SiSquare, SiUbereats, SiDoordash, SiDeliveroo } from "react-icons/si";
 
 const LiveNumber = ({ initial, isPercent = false }: { initial: number, isPercent?: boolean }) => {
   const [val, setVal] = useState(initial);
@@ -23,6 +24,34 @@ const LiveNumber = ({ initial, isPercent = false }: { initial: number, isPercent
 
 import logoIcon from "../../Images/logo-icon.png";
 import logoText from "../../Images/logo-text.png";
+
+// Replicas for missing icons
+const ToastLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#F15A2B', fontWeight: 800, fontSize: '28px', fontFamily: 'system-ui, sans-serif', letterSpacing: '-1px' }}>
+    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M19 5c-1.3-.6-3.6-1-7-1s-5.7.4-7 1c-1.7.6-3 1.9-3 3.6v8.8c0 1.7 1.3 3.1 3 3.6 1.3.6 3.6 1 7 1s5.7-.4 7-1c1.7-.6 3-1.9 3-3.6V8.6C22 6.9 20.7 5.6 19 5zM12 19c-2.8 0-4.9-.3-6-.7-1-.3-1.5-1.1-1.5-1.9v-3c1.5 1 4 1.6 7.5 1.6s6-.6 7.5-1.6v3c0 .8-.5 1.6-1.5 1.9-1.1.4-3.2.7-6 .7zM19.5 11c-1.5 1-4 1.6-7.5 1.6S4.5 12 3 11V8.6c0-.8.5-1.6 1.5-1.9 1.1-.4 3.2-.7 6-.7s4.9.3 6 .7c1 .3 1.5 1.1 1.5 1.9V11z"/></svg>
+    toast
+  </div>
+);
+
+const CloverLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00A859', fontWeight: 600, fontSize: '26px', fontFamily: 'system-ui, sans-serif', letterSpacing: '-0.5px' }}>
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="4"/></svg>
+    clover
+  </div>
+);
+
+const OpenTableLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#DA3743', fontWeight: 700, fontSize: '24px', fontFamily: 'system-ui, sans-serif' }}>
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/></svg>
+    OpenTable
+  </div>
+);
+
+const GrubhubLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', color: '#FF8000', fontWeight: 900, fontSize: '26px', fontFamily: 'system-ui, sans-serif', letterSpacing: '-0.5px' }}>
+    GRUBHUB
+  </div>
+);
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -61,11 +90,24 @@ export default function Home() {
     "trendy",
   ];
 
-  const trustMarquee = "Maison Clair / Ortolan / KITŌ / Bellweather / Hōjō & Sons / Verdoye";
+  const trustBrands: { name: string; style: React.CSSProperties }[] = [
+    { name: 'Maison Clair',  style: { fontFamily: 'var(--font-serif)',    fontStyle: 'italic',  fontSize: '26px', fontWeight: 400, letterSpacing: '-0.02em' } },
+    { name: 'ORTOLAN',       style: { fontFamily: 'var(--font-display)',  fontStyle: 'normal',  fontSize: '12px', fontWeight: 700, letterSpacing: '0.22em',  textTransform: 'uppercase' } },
+    { name: 'KITŌ',          style: { fontFamily: 'var(--font-mono-new)', fontStyle: 'normal',  fontSize: '15px', fontWeight: 400, letterSpacing: '0.28em',  textTransform: 'uppercase' } },
+    { name: 'Bellweather',   style: { fontFamily: 'var(--font-display)',  fontStyle: 'normal',  fontSize: '22px', fontWeight: 300, letterSpacing: '-0.03em' } },
+    { name: 'Hōjō & Sons',   style: { fontFamily: 'var(--font-serif)',    fontStyle: 'italic',  fontSize: '22px', fontWeight: 400, letterSpacing: '-0.01em' } },
+    { name: 'Verdoye',       style: { fontFamily: 'var(--font-display)',  fontStyle: 'normal',  fontSize: '24px', fontWeight: 800, letterSpacing: '-0.04em' } },
+  ];
+
   const integrationLogos = [
-    { src: "/integrations/toast.svg", alt: "Toast" },
-    { src: "/integrations/clover.svg", alt: "Clover" },
-    { src: "/integrations/chime.svg", alt: "Chime" },
+    { node: <ToastLogo />, ariaLabel: "Toast POS", href: "https://pos.toasttab.com/" },
+    { node: <CloverLogo />, ariaLabel: "Clover", href: "https://www.clover.com/" },
+    { node: <SiSquare size={36} color="#000000" />, ariaLabel: "Square", href: "https://squareup.com/" },
+    { node: <OpenTableLogo />, ariaLabel: "OpenTable", href: "https://www.opentable.com/" },
+    { node: <SiUbereats size={36} color="#06C167" />, ariaLabel: "Uber Eats", href: "https://www.ubereats.com/" },
+    { node: <SiDoordash size={36} color="#FF3008" />, ariaLabel: "DoorDash", href: "https://www.doordash.com/" },
+    { node: <GrubhubLogo />, ariaLabel: "Grubhub", href: "https://www.grubhub.com/" },
+    { node: <SiDeliveroo size={36} color="#00CCBC" />, ariaLabel: "Deliveroo", href: "https://deliveroo.co.uk/" }
   ];
 
   const previewTaglines: Record<string, { label: string; text: string }> = {
@@ -413,28 +455,39 @@ export default function Home() {
           <p className="trust-label reveal">Trusted by kitchens plating <em style={{ fontFamily: "var(--font-serif)" }}>12M+</em> covers a year</p>
           <div className="trust-logos reveal">
             <ScrollVelocity
-              texts={[trustMarquee]}
-              direction="right"
-              velocity={70}
-              numCopies={6}
-              className="trust-item"
+              texts={[
+                <>
+                  {trustBrands.map(({ name, style }, i) => (
+                    <React.Fragment key={i}>
+                      <span className="trust-pill" style={style}>{name}</span>
+                      <span className="trust-sep" aria-hidden="true">·</span>
+                    </React.Fragment>
+                  ))}
+                </>
+              ]}
+              velocity={60}
+              numCopies={4}
+              className="trust-copy"
               parallaxClassName="trust-parallax"
               scrollerClassName="trust-scroller"
+              velocityMapping={{ input: [0, 1000], output: [0, 0] }}
             />
           </div>
-          <div className="trust-integrations reveal">
+          <div className="trust-integrations reveal" style={{ marginTop: '3rem' }}>
             <span className="integrations-label">Integrations</span>
-            <LogoLoop
-              logos={integrationLogos}
-              direction="left"
-              speed={85}
-              gap={48}
-              logoHeight={36}
-              fadeOut
-              fadeOutColor="var(--color-bone)"
-              className="integrations-loop"
-              ariaLabel="Integration logos"
-            />
+            <div style={{ position: 'relative', height: '60px', overflow: 'hidden' }}>
+              <LogoLoop
+                logos={integrationLogos}
+                speed={85}
+                direction="left"
+                logoHeight={36}
+                gap={48}
+                scaleOnHover
+                fadeOut
+                fadeOutColor="var(--color-bone)"
+                ariaLabel="Technology partners"
+              />
+            </div>
           </div>
         </div>
       </section>
