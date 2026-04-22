@@ -488,7 +488,7 @@ export default function Home() {
               <h3 className="f-title">Predicted guests, <em>not wishful thinking.</em></h3>
               <p className="f-desc">Blend weather, local events, reservations and historical lifts into one number. Updated every 15 minutes.</p>
               <div className="f-visual">
-                <div className="f-forecast">
+                <div className="f-forecast" style={{ height: "65px" }}>
                   <div className="bar" style={{ height: "40%" }}></div>
                   <div className="bar" style={{ height: "55%" }}></div>
                   <div className="bar peak" style={{ height: "90%" }}></div>
@@ -496,6 +496,9 @@ export default function Home() {
                   <div className="bar" style={{ height: "45%" }}></div>
                   <div className="bar" style={{ height: "60%" }}></div>
                   <div className="bar peak" style={{ height: "85%" }}></div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginTop: '8px', textAlign: 'center', fontFamily: 'var(--font-mono-new)', fontSize: '10.5px', color: 'var(--muted-2)', textTransform: 'uppercase' }}>
+                  <span>Mon</span><span>Tue</span><span style={{ color: 'var(--cream)', fontWeight: 500 }}>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span style={{ color: 'var(--cream)', fontWeight: 500 }}>Sun</span>
                 </div>
               </div>
             </article>
@@ -521,7 +524,7 @@ export default function Home() {
               <h3 className="f-title">One order button, <em>zero spreadsheets.</em></h3>
               <p className="f-desc">Draft, approve, and dispatch orders to every supplier from one screen. Track each delivery down to the crate.</p>
               <div className="f-visual">
-                <div className="f-track" style={{ background: "var(--ink)", borderRadius: "12px", padding: "24px 20px", color: "var(--cream)" }}>
+                <div className="f-track" style={{ background: "var(--ink)", borderRadius: "14px", padding: "30px 20px", color: "var(--cream)" }}>
                   <div className="line"></div>
                   <div className="node done" style={{ left: "10%" }}></div>
                   <div className="lbl" style={{ left: "10%" }}>Drafted</div>
@@ -612,50 +615,56 @@ export default function Home() {
             <h2 className="section-title">Three evenings <em>to a smarter kitchen.</em></h2>
           </div>
           <div className="steps">
-            <div className="step reveal">
+            {/* ── Step 01: green / connect ── */}
+            <div className="step step--01 reveal">
               <div className="step-num">01</div>
               <div className="step-body">
                 <h4>Connect your POS &amp; suppliers</h4>
                 <p>We pull two years of covers, items and invoices. Thirty-plus POS integrations. No spreadsheets, no sales calls, no CSV gymnastics.</p>
               </div>
               <div className="step-visual">
-                <div className="card">
-                  <div className="row"><span>Toast POS</span><strong className="g">connected</strong></div>
-                  <div className="row"><span>Sysco · East Bay</span><strong className="g">connected</strong></div>
-                  <div className="row"><span>Local Greens Co.</span><strong className="g">connected</strong></div>
-                  <div className="row"><span>Historical data</span><strong>2y 3mo</strong></div>
+                <div className="card card--01">
+                  <div className="card-accent-bar card-accent-bar--green"/>
+                  <div className="row"><span>Toast POS</span><strong className="chip chip--green">✓ connected</strong></div>
+                  <div className="row"><span>Sysco · East Bay</span><strong className="chip chip--green">✓ connected</strong></div>
+                  <div className="row"><span>Local Greens Co.</span><strong className="chip chip--green">✓ connected</strong></div>
+                  <div className="row"><span>Historical data</span><strong className="chip chip--ink">2y 3mo</strong></div>
                 </div>
               </div>
             </div>
 
-            <div className="step reveal">
+            {/* ── Step 02: indigo / learn ── */}
+            <div className="step step--02 step--reversed reveal">
               <div className="step-num">02</div>
               <div className="step-body">
                 <h4>We learn your kitchen</h4>
                 <p>Models train on your specific patterns — which dishes move on rainy Thursdays, which wine pairs with what, which supplier slips when.</p>
               </div>
               <div className="step-visual">
-                <div className="card">
-                  <div className="row"><span>Weather uplift</span><strong>+12% Fri rain</strong></div>
-                  <div className="row"><span>Event uplift</span><strong>+170 MON</strong></div>
-                  <div className="row"><span>SKU elasticity</span><strong>328 mapped</strong></div>
-                  <div className="row"><span>Supplier ETA</span><strong className="g">±0.6 days</strong></div>
+                <div className="card card--02">
+                  <div className="card-accent-bar card-accent-bar--indigo"/>
+                  <div className="row"><span>Weather uplift</span><strong className="chip chip--blue">+12% Fri rain</strong></div>
+                  <div className="row"><span>Event uplift</span><strong className="chip chip--purple">+170 covers Mon</strong></div>
+                  <div className="row"><span>SKU elasticity</span><strong className="chip chip--ink">328 mapped</strong></div>
+                  <div className="row"><span>Supplier ETA</span><strong className="chip chip--green">±0.6 days</strong></div>
                 </div>
               </div>
             </div>
 
-            <div className="step reveal">
+            {/* ── Step 03: amber / operate ── */}
+            <div className="step step--03 reveal">
               <div className="step-num">03</div>
               <div className="step-body">
                 <h4>Cook with confidence</h4>
                 <p>Every morning: tonight's guest count, what to prep, what to order, who to call. Every evening: variance you can act on.</p>
               </div>
               <div className="step-visual">
-                <div className="card">
-                  <div className="row"><span>Tonight's forecast</span><strong>465 covers</strong></div>
-                  <div className="row"><span>Drafts awaiting</span><strong>3 POs</strong></div>
-                  <div className="row"><span>Critical SKUs</span><strong className="g">0 live</strong></div>
-                  <div className="row"><span>Status</span><strong className="g">optimal</strong></div>
+                <div className="card card--03">
+                  <div className="card-accent-bar card-accent-bar--amber"/>
+                  <div className="row"><span>Tonight's forecast</span><strong className="chip chip--ink">465 covers</strong></div>
+                  <div className="row"><span>Drafts awaiting</span><strong className="chip chip--amber">3 POs</strong></div>
+                  <div className="row"><span>Critical SKUs</span><strong className="chip chip--green">0 live</strong></div>
+                  <div className="row"><span>Status</span><strong className="chip chip--green">● optimal</strong></div>
                 </div>
               </div>
             </div>
