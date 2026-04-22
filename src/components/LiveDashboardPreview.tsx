@@ -2229,7 +2229,7 @@ export default function LiveDashboardPreview({ onPathChange }: LiveDashboardPrev
   }, [activePath, onPathChange]);
 
   return (
-    <div className="dash-preview flex" style={{ zoom: 0.7, width: '100%', maxWidth: 1040, background: 'var(--color-canvas)', height: '700px', overflow: 'hidden', textAlign: 'left', borderRadius: '16px', border: '1px solid var(--color-line)', boxShadow: '0 20px 40px -24px rgba(14,18,16,.18)' }}>
+    <div className="dash-preview flex" style={{ zoom: 0.70, width: '100%', maxWidth: 1560, background: 'var(--color-canvas)', height: '700px', overflow: 'hidden', textAlign: 'left', borderRadius: '16px', border: '1px solid var(--color-line)', boxShadow: '0 20px 40px -24px rgba(14,18,16,.18)' }}>
       {/* Sidebar */}
       <aside
         className="h-full flex flex-col z-50 transition-all duration-300"

@@ -292,15 +292,32 @@
 .ss2 .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(23,178,106,.2); }
 
 .ss2 .hero-title {
-  font-size: clamp(40px, 6.4vw, 90px); line-height: 0.96;
-  letter-spacing: -0.035em; font-weight: 600;
-  margin: 24px 0 28px; max-width: 18ch;
+  font-size: clamp(34px, 5vw, 76px); line-height: 0.94;
+  letter-spacing: -0.04em; font-weight: 600;
+  margin: 20px 0 24px; max-width: 15ch;
 }
 .ss2 .hero-title em { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--ink-soft-new); }
-.ss2 .hero-title .accent { position: relative; white-space: nowrap; }
-.ss2 .hero-title .accent::after {
-  content: ""; position: absolute; left: -2%; right: -2%; bottom: 6%;
-  height: 0.12em; background: var(--green); border-radius: 4px; z-index: -1; opacity: .25;
+/* "[adjective] kitchens." on its own reserved line.
+   min-width = longest adjective (13 chars) + " kitchens." (10 chars) = 23 chars,
+   keeping the right column (preview) from ever shifting. */
+.ss2 .hero-adj-line {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+  gap: 0.28em;
+  min-width: 23ch;
+}
+/* Rotating adjective — underline scales naturally with the animated text width */
+.ss2 .rotating-adjective {
+  display: inline-flex !important;
+  align-items: baseline;
+  border-bottom: 0.08em solid currentColor;
+  padding-bottom: 0.04em;
+}
+/* Clip characters during slide-in/out animation */
+.ss2 .rotating-split-level {
+  overflow: hidden;
+  padding-bottom: 0.1em;
 }
 .ss2 .hero-sub { font-size: clamp(15px, 1.1vw, 18px); color: var(--ink-soft-new); max-width: 56ch; line-height: 1.5; margin-bottom: 32px; }
 
@@ -332,11 +349,12 @@
 }
 .ss2 .preview-frame {
   position: relative; z-index: 1; background: var(--paper);
-  border-radius: 24px; border: 1px solid rgba(14,18,16,.08);
-  box-shadow: var(--shadow-lg); overflow: hidden;
-  transform-style: preserve-3d; animation: ss2-float 6s ease-in-out infinite;
+  border-radius: 24px;
+  box-shadow: 0 1px 0 rgba(14,18,16,.04), 0 30px 60px -28px rgba(14,18,16,.22);
+  overflow: visible;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
-@keyframes ss2-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .ss2 .preview-tagline {
   margin-top: 16px;
   display: flex;
@@ -539,15 +557,75 @@
 .ss2 .day.sel .day-tag.delivery { background: var(--cream); color: var(--ink-new); }
 
 /* Trust */
-.ss2 .trust { padding: 80px 0 40px; text-align: center; }
+.ss2 .trust { padding: 80px 0 24px; text-align: center; }
 .ss2 .trust-label { font-family: var(--font-mono-new); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
 .ss2 .trust-logos {
-  margin-top: 28px; display: flex; align-items: center; justify-content: center;
-  gap: 56px; flex-wrap: wrap; color: var(--ink-soft-new); opacity: .7;
+  margin-top: 28px; position: relative; overflow: hidden; border-block: 1px solid var(--line-soft);
+  padding: 18px 0; color: var(--ink-soft-new);
 }
-.ss2 .trust-logos span { font-family: var(--font-serif); font-style: italic; font-size: 24px; letter-spacing: -0.02em; }
-.ss2 .trust-logos span:nth-child(2n) { font-family: var(--font-sans-new); font-style: normal; font-weight: 600; letter-spacing: -0.03em; }
-.ss2 .trust-logos span:nth-child(3n) { font-family: var(--font-sans-new); font-style: normal; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; font-size: 14px; }
+.ss2 .trust-item,
+.ss2 .trust-parallax,
+.ss2 .trust-scroller { width: 100%; }
+.ss2 .trust-scroller {
+  display: flex;
+  width: max-content;
+  animation: ss2-trust-scroll 28s linear infinite;
+  will-change: transform;
+}
+.ss2 .trust-track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: max-content;
+  white-space: nowrap;
+  padding-right: 24px;
+}
+.ss2 .trust-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-radius: 999px;
+  border: 1px solid var(--line-soft); background: rgba(255,255,255,.55);
+  box-shadow: 0 10px 24px -18px rgba(14,18,16,.18);
+}
+.ss2 .trust-pill span { font-family: var(--font-serif); font-style: italic; font-size: 24px; letter-spacing: -0.02em; }
+.ss2 .trust-pill span:nth-child(2n) { font-family: var(--font-sans-new); font-style: normal; font-weight: 600; letter-spacing: -0.03em; }
+.ss2 .trust-pill span:nth-child(3n) { font-family: var(--font-sans-new); font-style: normal; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; font-size: 14px; }
+@keyframes ss2-trust-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.ss2 .trust-integrations {
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+.ss2 .integrations-label {
+  font-family: var(--font-mono-new);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ss2 .integrations-loop {
+  width: 100%;
+  overflow: hidden;
+  padding: 4px 0 2px;
+}
+.ss2 .logo-loop-track {
+  animation: ss2-logo-loop 22s linear infinite;
+  will-change: transform;
+}
+.ss2 .integrations-loop img {
+  display: block;
+  width: auto;
+  object-fit: contain;
+  filter: saturate(.98) contrast(1.02);
+}
+@keyframes ss2-logo-loop {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
 
 /* Section chrome */
 .ss2 .section { padding: 100px 0; position: relative; }
@@ -669,6 +747,8 @@
 .ss2 .stat-item .num { font-size: clamp(44px, 6vw, 80px); letter-spacing: -0.035em; font-weight: 500; line-height: 1; }
 .ss2 .stat-item .num em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: #6EE7A8; }
 .ss2 .stat-item .lbl { margin-top: 14px; font-size: 13.5px; color: var(--muted-2); max-width: 22ch; line-height: 1.45; }
+.ss2 .count-up,
+.ss2 .count-up-value { display: inline-block; min-width: 2ch; }
 
 /* Pricing */
 .ss2 .pricing { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 48px; }

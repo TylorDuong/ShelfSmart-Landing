@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import LiveDashboardPreview from "../components/LiveDashboardPreview";
+import BorderGlow from "../components/reactbits/BorderGlow";
+import CountUp from "../components/reactbits/CountUp";
+import LogoLoop from "../components/reactbits/LogoLoop";
+import RotatingText from "../components/reactbits/RotatingText";
+import ScrollVelocity from "../components/reactbits/ScrollVelocity";
 
 const LiveNumber = ({ initial, isPercent = false }: { initial: number, isPercent?: boolean }) => {
   const [val, setVal] = useState(initial);
@@ -22,6 +27,45 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [previewPath, setPreviewPath] = useState("/");
+  const [statsInView, setStatsInView] = useState(false);
+  const statsRef = useRef<HTMLDivElement | null>(null);
+
+  const rotatingAdjectives = [
+    "modern",
+    "casual",
+    "upscale",
+    "atmospheric",
+    "cozy",
+    "bustling",
+    "minimalist",
+    "rustic",
+    "chic",
+    "tableside",
+    "grab-and-go",
+    "authentic",
+    "fusion",
+    "experimental",
+    "farm-to-table",
+    "specialized",
+    "artisanal",
+    "global",
+    "international",
+    "premium",
+    "luxury",
+    "competitive",
+    "romantic",
+    "professional",
+    "communal",
+    "celebratory",
+    "trendy",
+  ];
+
+  const trustMarquee = "Maison Clair / Ortolan / KITŌ / Bellweather / Hōjō & Sons / Verdoye";
+  const integrationLogos = [
+    { src: "/integrations/toast.svg", alt: "Toast" },
+    { src: "/integrations/clover.svg", alt: "Clover" },
+    { src: "/integrations/chime.svg", alt: "Chime" },
+  ];
 
   const previewTaglines: Record<string, { label: string; text: string }> = {
     "/": {
@@ -145,6 +189,29 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const target = statsRef.current;
+    if (!target) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setStatsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setStatsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
   const handleWaitlistSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("submitting");
@@ -211,7 +278,7 @@ export default function Home() {
      HERO
      ========================================================== */}
 <section className="hero">
-  <div className="container" style={{ display: 'grid', gridTemplateColumns: '0.95fr 1.25fr', gap: '48px', alignItems: 'start' }}>
+  <div className="container" style={{ display: 'grid', gridTemplateColumns: '0.82fr 1.38fr', gap: '40px', alignItems: 'start' }}>
     <div className="hero-text-col">
       <span className="eyebrow rise d1">
         <span className="dot"></span>
@@ -220,7 +287,22 @@ export default function Home() {
 
       <h1 className="hero-title rise d2">
         Inventory <em>intelligence</em><br />
-        for <span className="accent">modern kitchens.</span>
+        for<br />
+        <span className="hero-adj-line">
+          <RotatingText
+            texts={rotatingAdjectives}
+            rotationInterval={2200}
+            staggerDuration={0.025}
+            staggerFrom="last"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-120%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 400 }}
+            splitLevelClassName="rotating-split-level"
+            mainClassName="rotating-adjective"
+          />{" "}
+          kitchens.
+        </span>
       </h1>
 
       <p className="hero-sub rise d3">
@@ -247,9 +329,27 @@ export default function Home() {
     </div>
 
     <div className="hero-visual-col rise d5" style={{ perspective: '1600px', justifySelf: 'start', width: '100%' }} id="preview">
-      <div style={{ transform: 'rotateY(-8deg) rotateX(4deg)', transition: 'transform 0.4s ease, box-shadow 0.4s ease', transformStyle: 'preserve-3d' }} onMouseOver={e => e.currentTarget.style.transform = 'rotateY(0) rotateX(0)'} onMouseOut={e => e.currentTarget.style.transform = 'rotateY(-8deg) rotateX(4deg)'}>
-        <LiveDashboardPreview onPathChange={setPreviewPath} />
-      </div>
+      <BorderGlow
+        className="preview-frame"
+        borderRadius={24}
+        edgeSensitivity={44}
+        glowRadius={36}
+        glowIntensity={1.15}
+        glowColor="140 55 60"
+        backgroundColor="var(--paper)"
+        coneSpread={28}
+        colors={['#3DA35D', '#96E072', '#17b26a']}
+        animated
+      >
+        <div
+          className="preview-tilt"
+          style={{ transform: 'rotateY(-8deg) rotateX(4deg)', transition: 'transform 0.4s ease, box-shadow 0.4s ease', transformStyle: 'preserve-3d' }}
+          onMouseOver={e => e.currentTarget.style.transform = 'rotateY(0) rotateX(0)'}
+          onMouseOut={e => e.currentTarget.style.transform = 'rotateY(-8deg) rotateX(4deg)'}
+        >
+          <LiveDashboardPreview onPathChange={setPreviewPath} />
+        </div>
+      </BorderGlow>
       <div key={previewPath} className="preview-tagline">
         <span className="preview-tagline__label">{activeTagline.label}</span>
         <span className="preview-tagline__text">{activeTagline.text}</span>
@@ -265,12 +365,29 @@ export default function Home() {
   <div className="container">
     <p className="trust-label reveal">Trusted by kitchens plating <em style={{ fontFamily: "var(--font-serif)" }}>12M+</em> covers a year</p>
     <div className="trust-logos reveal">
-      <span>Maison&nbsp;Clair</span>
-      <span>Ortolan</span>
-      <span>KITŌ</span>
-      <span>Bellweather</span>
-      <span>Hōjō&nbsp;&amp;&nbsp;Sons</span>
-      <span>Verdoye</span>
+      <ScrollVelocity
+        texts={[trustMarquee]}
+        direction="right"
+        velocity={70}
+        numCopies={6}
+        className="trust-item"
+        parallaxClassName="trust-parallax"
+        scrollerClassName="trust-scroller"
+      />
+    </div>
+    <div className="trust-integrations reveal">
+      <span className="integrations-label">Integrations</span>
+      <LogoLoop
+        logos={integrationLogos}
+        direction="left"
+        speed={85}
+        gap={48}
+        logoHeight={36}
+        fadeOut
+        fadeOutColor="var(--color-bone)"
+        className="integrations-loop"
+        ariaLabel="Integration logos"
+      />
     </div>
   </div>
 </section>
@@ -384,12 +501,24 @@ export default function Home() {
      ========================================================== */}
 <section className="section" style={{ paddingTop: "40px" }}>
   <div className="container">
-    <div className="stat-band reveal">
+    <div className="stat-band reveal" ref={statsRef}>
       <div className="stat-grid">
-        <div className="stat-item"><div className="num">−38<em>%</em></div><div className="lbl">Average reduction in food waste within 60 days</div></div>
-        <div className="stat-item"><div className="num">4.2<em>h</em></div><div className="lbl">Manager hours saved per week on ordering</div></div>
-        <div className="stat-item"><div className="num">91<em>%</em></div><div className="lbl">Forecast accuracy across partner restaurants</div></div>
-        <div className="stat-item"><div className="num">24<em>h</em></div><div className="lbl">From install to first predictive service</div></div>
+        <div className="stat-item">
+          <div className="num">−<CountUp to={38} duration={1.6} startWhen={statsInView} /><em>%</em></div>
+          <div className="lbl">Average reduction in food waste within 60 days</div>
+        </div>
+        <div className="stat-item">
+          <div className="num"><CountUp to={4.2} duration={1.8} startWhen={statsInView} /><em>h</em></div>
+          <div className="lbl">Manager hours saved per week on ordering</div>
+        </div>
+        <div className="stat-item">
+          <div className="num"><CountUp to={91} duration={1.6} startWhen={statsInView} /><em>%</em></div>
+          <div className="lbl">Forecast accuracy across partner restaurants</div>
+        </div>
+        <div className="stat-item">
+          <div className="num"><CountUp to={24} duration={1.6} startWhen={statsInView} /><em>h</em></div>
+          <div className="lbl">From install to first predictive service</div>
+        </div>
       </div>
     </div>
   </div>

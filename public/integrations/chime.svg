@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 64" role="img" aria-labelledby="title desc">
+  <title id="title">Chime</title>
+  <desc id="desc">Chime logo mark</desc>
+  <rect width="220" height="64" rx="14" fill="none"/>
+  <g transform="translate(14 11)">
+    <circle cx="21" cy="21" r="15" fill="none" stroke="#17A3C7" stroke-width="6"/>
+    <circle cx="21" cy="21" r="5" fill="#17A3C7"/>
+  </g>
+  <text x="72" y="39" fill="#141A14" font-family="Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="-0.04em">Chime</text>
+</svg>
