@@ -2202,6 +2202,7 @@ type LiveDashboardPreviewProps = {
 export default function LiveDashboardPreview({ onPathChange }: LiveDashboardPreviewProps) {
   const isCollapsed = true;
   const [activePath, setActivePath] = useState('/');
+  const [paused, setPaused] = useState(false);
 
   const now = new Date();
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -2213,6 +2214,7 @@ export default function LiveDashboardPreview({ onPathChange }: LiveDashboardPrev
   });
 
   useEffect(() => {
+    if (paused) return;
     const delay = activePath === '/' ? 9500 : 4500;
     const timeout = setTimeout(() => {
       setActivePath((prev) => {
@@ -2222,14 +2224,19 @@ export default function LiveDashboardPreview({ onPathChange }: LiveDashboardPrev
       });
     }, delay);
     return () => clearTimeout(timeout);
-  }, [activePath]);
+  }, [activePath, paused]);
 
   useEffect(() => {
     if (onPathChange) onPathChange(activePath);
   }, [activePath, onPathChange]);
 
   return (
-    <div className="dash-preview ldp-outer flex" style={{ width: '100%', maxWidth: 1560, background: 'var(--color-canvas)', height: '700px', overflow: 'hidden', textAlign: 'left', borderRadius: '16px', border: '1px solid var(--color-line)', boxShadow: '0 20px 40px -24px rgba(14,18,16,.18)' }}>
+    <div
+      className="dash-preview ldp-outer flex"
+      style={{ width: '100%', maxWidth: 1560, background: 'var(--color-canvas)', height: '700px', overflow: 'hidden', textAlign: 'left', borderRadius: '16px', border: '1px solid var(--color-line)', boxShadow: '0 20px 40px -24px rgba(14,18,16,.18)' }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       {/* Sidebar */}
       <aside
         className="h-full flex flex-col z-50 transition-all duration-300"

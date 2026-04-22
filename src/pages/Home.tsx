@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, LayoutGroup } from "motion/react";
+import { motion, LayoutGroup, AnimatePresence } from "motion/react";
 import { Link } from "react-router-dom";
 import LiveDashboardPreview from "../components/LiveDashboardPreview";
 import BorderGlow from "../components/reactbits/BorderGlow";
@@ -116,6 +116,7 @@ export default function Home() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [previewPath, setPreviewPath] = useState("/");
   const [statsInView, setStatsInView] = useState(false);
+  const [dashFullscreen, setDashFullscreen] = useState(false);
   const statsRef = useRef<HTMLDivElement | null>(null);
 
 
@@ -284,6 +285,12 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setDashFullscreen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const handleWaitlistSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("submitting");
@@ -395,10 +402,10 @@ export default function Home() {
                 Join waitlist — be first in
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
               </Link>
-              <a href="#preview" className="btn btn-ghost">
+              <button className="btn btn-ghost" onClick={() => setDashFullscreen(true)}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 See the dashboard
-              </a>
+              </button>
             </div>
 
             <div className="hero-meta rise d5">
@@ -783,6 +790,35 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* ── Fullscreen dashboard modal ── */}
+      <AnimatePresence>
+        {dashFullscreen && (
+          <motion.div
+            className="dash-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            onClick={() => setDashFullscreen(false)}
+          >
+            <motion.div
+              className="dash-modal-inner"
+              initial={{ opacity: 0, scale: 0.96, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 20 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <button className="dash-modal-close" onClick={() => setDashFullscreen(false)} aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+              <LiveDashboardPreview />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
