@@ -215,7 +215,7 @@ export default function Home() {
     <div className="hero-text-col">
       <span className="eyebrow rise d1">
         <span className="dot"></span>
-        Now serving v2.0 · S.M.A.R.T forecasting
+        Powered by · S.M.A.R.T forecasting
       </span>
 
       <h1 className="hero-title rise d2">

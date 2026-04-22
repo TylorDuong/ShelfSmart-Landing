@@ -391,9 +391,9 @@ const days = useMemo(() => {
         <div>
           <div className="eyebrow mb-1">{todayLabel}</div>
           <h1 className="display" style={{ fontSize: 38, margin: 0 }}>
-            {greeting}, Tylor.{" "}
-            <span className="serif" style={{ color: "var(--color-ink-soft)", fontWeight: 400 }}>
-              here's service today.
+            {greeting}, John.{" "}
+            <span className="serif" style={{ color: "var(--color-ink-soft)", fontWeight: 500 }}>
+               Here's service today.
             </span>
           </h1>
         </div>
