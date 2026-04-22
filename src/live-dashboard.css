@@ -1,0 +1,270 @@
+/* ═══════════════════════════════════════════════════════════
+   ShelfSmart Dashboard Preview — Scoped Design System
+   All styles use .dash-preview to override .ss2 parent scope
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ── Scope wrapper ── */
+.dash-preview {
+  --color-canvas: #f5f8f5;
+  --color-cream: #f0f5f0;
+  --color-paper: #ffffff;
+  --color-bone: #f5f8f5;
+  --color-ink: #141414;
+  --color-ink-2: #2a2a2a;
+  --color-ink-soft: #555;
+  --color-mute: #7a8578;
+  --color-line: #e0e8e0;
+  --color-line-2: #d4dcd4;
+  --line-soft: #e0e8e0;
+  --color-accent: oklch(0.65 0.13 150);
+  --color-accent-soft: oklch(0.92 0.05 150);
+  --color-sage: oklch(0.65 0.13 150);
+  --color-sage-soft: oklch(0.92 0.05 150);
+  --color-danger: oklch(0.58 0.18 28);
+  --color-danger-soft: oklch(0.93 0.06 30);
+
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  color: var(--color-ink) !important;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+.dash-preview *,
+.dash-preview *::before,
+.dash-preview *::after {
+  box-sizing: border-box;
+}
+
+/* ── Typography ── */
+.dash-preview .mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+}
+.dash-preview .serif {
+  font-family: 'Instrument Serif', serif !important;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+.dash-preview .display {
+  font-family: Inter, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 0.95 !important;
+  display: block !important;
+  background: none !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: var(--color-ink) !important;
+  text-transform: none !important;
+}
+.dash-preview .eyebrow {
+  font-size: 10px !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: var(--color-mute) !important;
+  font-weight: 600 !important;
+  display: block !important;
+  background: none !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  gap: 0 !important;
+  align-items: initial !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+}
+.dash-preview .eyebrow.flex {
+  display: flex !important;
+}
+.dash-preview .num {
+  font-family: Inter !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+
+/* ── Cards ── */
+.dash-preview .card {
+  background: var(--color-paper) !important;
+  border-radius: 22px !important;
+  border: 1px solid var(--color-line) !important;
+  container-type: inline-size;
+  min-width: 0;
+}
+.dash-preview .card-dark {
+  background: var(--color-ink) !important;
+  color: #f4efe3 !important;
+  border-radius: 22px !important;
+  border: none !important;
+  container-type: inline-size;
+  min-width: 0;
+}
+.dash-preview .card-cream {
+  background: var(--color-cream) !important;
+  border-radius: 22px !important;
+  border: 1px solid var(--color-line) !important;
+  container-type: inline-size;
+  min-width: 0;
+}
+
+/* ── Chips ── */
+.dash-preview .chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  background: none;
+  border: none;
+}
+.dash-preview .chip-dark {
+  background: var(--color-ink) !important;
+  color: #fff !important;
+}
+.dash-preview .chip-accent {
+  background: var(--color-accent) !important;
+  color: #fff !important;
+}
+.dash-preview .chip-sage {
+  background: var(--color-sage) !important;
+  color: #fff !important;
+}
+.dash-preview .chip-danger {
+  background: var(--color-danger) !important;
+  color: #fff !important;
+}
+.dash-preview .chip-ghost {
+  background: var(--color-cream) !important;
+  color: var(--color-ink) !important;
+  border: 1px solid var(--color-line) !important;
+}
+
+/* ── Buttons ── */
+.dash-preview .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 16px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  transition: transform 0.15s ease !important;
+  border: 0 !important;
+  background: none !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  font-family: "Inter", sans-serif !important;
+}
+.dash-preview .btn:hover {
+  transform: translateY(-1px);
+}
+.dash-preview .btn-dark {
+  background: var(--color-ink) !important;
+  color: #fff !important;
+}
+.dash-preview .btn-ghost {
+  background: var(--color-cream) !important;
+  color: var(--color-ink) !important;
+  border: 1px solid var(--color-line) !important;
+}
+.dash-preview .btn-accent {
+  background: var(--color-accent) !important;
+  color: #fff !important;
+}
+
+/* ── Buttons (bare) — override .ss2 button reset ── */
+.dash-preview button {
+  font-family: "Inter", sans-serif !important;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* ── Form inputs ── */
+.dash-preview .input {
+  background: var(--color-cream) !important;
+  border: 1px solid var(--color-line) !important;
+  border-radius: 14px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  width: 100% !important;
+  font-family: inherit !important;
+  color: var(--color-ink) !important;
+}
+.dash-preview .input:focus {
+  outline: 2px solid var(--color-ink) !important;
+  outline-offset: -1px;
+}
+
+/* ── Pill toggles ── */
+.dash-preview .pill-btn {
+  border: 1px solid var(--color-line) !important;
+  border-radius: 999px !important;
+  padding: 7px 12px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--color-ink-soft) !important;
+  background: var(--color-paper) !important;
+  cursor: pointer;
+}
+.dash-preview .pill-btn.active {
+  background: var(--color-ink) !important;
+  color: #fff !important;
+  border-color: var(--color-ink) !important;
+}
+
+/* ── Decorative ── */
+.dash-preview .hatch-light {
+  background-image: repeating-linear-gradient(135deg, rgba(20,20,20,0.05) 0 1px, transparent 1px 7px) !important;
+}
+
+/* ── Animations ── */
+.dash-preview .fadein {
+  animation: dp-fadein 0.3s ease both;
+}
+@keyframes dp-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.dash-preview .dash-preview-page {
+  animation: dp-pagefade 0.45s ease both;
+}
+@keyframes dp-pagefade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Scrollbar ── */
+.dash-preview .scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.dash-preview .thin-scroll::-webkit-scrollbar { width: 3px; }
+.dash-preview .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+.dash-preview .thin-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-line-2); border-radius: 999px;
+}
+
+/* ── SVG charts fit container ── */
+.dash-preview .card svg,
+.dash-preview .card-dark svg,
+.dash-preview .card-cream svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Links inside preview ── */
+.dash-preview a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* ── H1 override (dashboard greeting) ── */
+.dash-preview h1.display {
+  font-size: 38px !important;
+  margin: 0 !important;
+}

@@ -1,692 +1,789 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
-import { 
-  Leaf, 
-  Utensils, 
-  Soup, 
-  Carrot, 
-  TrendingUp, 
-  ShieldCheck, 
-  Zap, 
-  ArrowRight, 
-  CheckCircle2,
-  Menu,
-  X,
-  ChefHat,
-  BarChart3,
-  Clock,
-  ChevronRight,
-  Apple,
-  Coffee,
-  Pizza,
-  LayoutDashboard,
-  Package,
-  Sparkles,
-  Truck,
-  Layers,
-  Settings,
-  Search,
-  Bell,
-  Plus,
-  AlertCircle,
-  Activity
-} from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
-import LOGO_ICON from "../../Images/logo-icon.png";
-import LOGO_TEXT from "../../Images/logo-text.png";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, LayoutGroup } from "motion/react";
 import { Link } from "react-router-dom";
+import LiveDashboardPreview from "../components/LiveDashboardPreview";
+import BorderGlow from "../components/reactbits/BorderGlow";
+import CountUp from "../components/reactbits/CountUp";
+import LogoLoop from "../components/reactbits/LogoLoop";
+import RotatingText from "../components/reactbits/RotatingText";
+import ScrollVelocity from "../components/reactbits/ScrollVelocity";
+import { SiSquare, SiUbereats, SiDoordash, SiDeliveroo } from "react-icons/si";
 
-const StaticIcon = ({ Icon, top, left, size }: { Icon: any, top: string, left: string, size: number, key?: React.Key }) => {
-  return (
-    <div
-      style={{ 
-        position: "absolute", 
-        top, 
-        left, 
-        opacity: 0.08,
-        zIndex: 0
-      }}
-    >
-      <Icon size={size} className="text-green-primary" />
-    </div>
-  );
-};
-
-const BackgroundIcons = () => {
-  const icons = [
-    { Icon: Leaf, top: "5%", left: "2%", size: 200 },
-    { Icon: Utensils, top: "15%", left: "88%", size: 180 },
-    { Icon: Soup, top: "65%", left: "5%", size: 240 },
-    { Icon: Carrot, top: "75%", left: "82%", size: 220 },
-    { Icon: Apple, top: "35%", left: "42%", size: 150 },
-    { Icon: ChefHat, top: "12%", left: "48%", size: 160 },
-    { Icon: Coffee, top: "45%", left: "12%", size: 140 },
-    { Icon: Pizza, top: "85%", left: "35%", size: 190 },
-    { Icon: Leaf, top: "25%", left: "75%", size: 130 },
-  ];
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-      {icons.map((icon, index) => (
-        <StaticIcon 
-          key={index} 
-          Icon={icon.Icon}
-          top={icon.top}
-          left={icon.left}
-          size={icon.size}
-        />
-      ))}
-    </div>
-  );
-};
-
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+const LiveNumber = ({ initial, isPercent = false }: { initial: number, isPercent?: boolean }) => {
+  const [val, setVal] = useState(initial);
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const interval = setInterval(() => {
+      if (Math.random() > 0.4) {
+        setVal(v => v + Math.floor(Math.random() * 3));
+      }
+    }, 2500 + Math.random() * 2000);
+    return () => clearInterval(interval);
   }, []);
-
-  return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md py-3 shadow-sm" : "bg-transparent py-6"}`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <a href="#hero" className="flex items-center gap-2 cursor-pointer group">
-          <img src={LOGO_ICON} alt="ShelfSmart Icon" className="w-10 h-10 object-contain group-hover:scale-105 transition-transform" referrerPolicy="no-referrer" />
-          <img src={LOGO_TEXT} alt="ShelfSmart" className="h-8 object-contain group-hover:opacity-80 transition-opacity" referrerPolicy="no-referrer" />
-        </a>
-
-        <div className="hidden md:flex items-center gap-8">
-          {["Features", "How it Works", "Pricing", "About"].map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replace(/\s/g, "-")}`} className="text-sm font-medium text-text-muted hover:text-green-primary transition-colors">
-              {item}
-            </a>
-          ))}
-          <Link to="/waitlist">
-            <button className="bg-green-primary text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-green-primary/90 transition-all shadow-lg shadow-green-primary/20 active:scale-95">
-              Join our Waitlist
-            </button>
-          </Link>
-        </div>
-
-        <button className="md:hidden text-text-dark" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
-          >
-            <div className="flex flex-col p-6 gap-4">
-              {["Features", "How it Works", "Pricing", "About"].map((item) => (
-                <a 
-                  key={item} 
-                  href={`#${item.toLowerCase().replace(/\s/g, "-")}`} 
-                  className="text-lg font-medium text-text-dark" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item}
-                </a>
-              ))}
-              <Link to="/waitlist">
-                <button className="bg-green-primary text-white px-6 py-3 rounded-xl font-semibold w-full mt-2">
-                  Join our Waitlist
-                </button>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
+  return <>{isPercent ? '+' + val + '%' : val}</>;
 };
 
-const DashboardPreview = () => {
-  return (
-    <div className="bg-[#F8FAF9] rounded-[1.5rem] overflow-hidden shadow-2xl border border-gray-100 flex h-[400px] md:h-[500px] w-full max-w-[700px] mx-auto scale-[0.75] sm:scale-90 lg:scale-100 origin-center transition-transform duration-500">
-      {/* Sidebar */}
-      <div className="w-40 bg-white border-r border-gray-100 p-4 hidden lg:flex flex-col gap-5">
-        <div className="flex flex-col gap-1">
-          <img src={LOGO_ICON} alt="Icon" className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
-          <img src={LOGO_TEXT} alt="Logo" className="h-3 object-contain" referrerPolicy="no-referrer" />
-          <div className="text-[6px] text-text-muted font-medium uppercase tracking-wider mt-1">Intelligent Curator</div>
-        </div>
+import logoIcon from "../../Images/logo-icon.png";
+import logoText from "../../Images/logo-text.png";
 
-        <div className="flex flex-col gap-3">
-          {[
-            { icon: LayoutDashboard, label: "Dashboard", active: true },
-            { icon: Package, label: "Live Inventory" },
-            { icon: Sparkles, label: "Smart Ordering" },
-            { icon: Truck, label: "Supplier Shipments" },
-            { icon: Layers, label: "Integrations" },
-            { icon: Settings, label: "Settings" },
-          ].map((item, i) => (
-            <div key={i} className={`flex items-center gap-2 text-[10px] font-semibold ${item.active ? "text-green-primary" : "text-text-muted"}`}>
-              <item.icon size={12} />
-              {item.label}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-auto flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-          <img src="https://picsum.photos/seed/alex/100/100" className="w-6 h-6 rounded-full" alt="User" referrerPolicy="no-referrer" />
-          <div className="flex flex-col">
-            <div className="text-[8px] font-bold text-text-dark">Alex Chen</div>
-            <div className="text-[6px] text-text-muted">Manager</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <div className="h-12 bg-white/50 backdrop-blur-sm border-b border-gray-100 px-4 flex items-center justify-between">
-          <div className="relative w-48">
-            <Search size={10} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="w-full bg-gray-100/50 border-none rounded-lg py-1 pl-7 pr-3 text-[8px] focus:ring-1 focus:ring-green-primary/30"
-              readOnly
-            />
-          </div>
-          <div className="flex items-center gap-2.5 text-text-muted">
-            <Bell size={14} />
-            <Settings size={14} />
-          </div>
-        </div>
-
-        {/* Dashboard Body */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar">
-          {/* Alert Bar */}
-          <div className="bg-red-50 border border-red-100 rounded-lg p-2 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-coral rounded-full flex items-center justify-center text-white">
-                <AlertCircle size={10} />
-              </div>
-              <div className="text-[8px] font-medium text-text-dark">
-                Out of Stock - <span className="text-coral underline cursor-pointer">Resolve</span>
-              </div>
-            </div>
-            <button className="bg-coral text-white text-[6px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
-              Find Alt
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Stock Status */}
-            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-50">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h4 className="font-display font-bold text-[10px] text-text-dark">Stock Status</h4>
-                  <p className="text-[7px] text-text-muted">Real-time levels</p>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-6 h-3 bg-green-primary rounded-full relative">
-                    <div className="absolute right-0.5 top-0.5 w-2 h-2 bg-white rounded-full" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2.5">
-                {[
-                  { cat: "DAIRY", items: [
-                    { name: "Heavy Cream", val: 0, color: "bg-coral", label: "Critical" },
-                    { name: "Whole Milk", val: 85, color: "bg-green-primary" }
-                  ]},
-                  { cat: "PRODUCE", items: [
-                    { name: "Avocados", val: 15, color: "bg-coral", label: "Low" }
-                  ]}
-                ].map((group, i) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex items-center justify-between text-[6px] font-bold tracking-widest text-text-muted">
-                      <span>{group.cat}</span>
-                      {group.items[0].label && <span className={group.items[0].color.replace('bg-', 'text-')}>{group.items[0].label}</span>}
-                    </div>
-                    {group.items.map((item, j) => (
-                      <div key={j} className="space-y-0.5">
-                        <div className="flex justify-between text-[7px] font-medium">
-                          <span>{item.name}</span>
-                          <span className={item.val < 20 ? "text-coral" : "text-text-muted"}>{item.val}%</span>
-                        </div>
-                        <div className="h-0.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div className={`h-full ${item.color}`} style={{ width: `${item.val}%` }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Scheduled Orders */}
-            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-50">
-              <h4 className="font-display font-bold text-[10px] text-text-dark mb-2">Orders</h4>
-              <div className="flex border-b border-gray-100 mb-2">
-                <div className="px-2 py-1 text-[8px] font-bold text-green-primary border-b-2 border-green-primary">Soon</div>
-                <div className="px-2 py-1 text-[8px] font-bold text-text-muted">Drafts</div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="p-2 rounded-lg border-l-2 border-green-primary bg-green-50/30 flex flex-col gap-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="text-[6px] font-bold text-green-primary uppercase tracking-wider">SYSCO</div>
-                      <div className="text-[8px] font-bold text-text-dark">Produce Mix</div>
-                    </div>
-                    <div className="bg-white px-1 py-0.5 rounded-full text-[6px] font-bold border border-gray-100">10 AM</div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-1 text-[6px] text-text-muted">
-                      <Truck size={6} />
-                      In Transit
-                    </div>
-                    <div className="text-[8px] font-bold text-text-dark">$1,420</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-0.5 text-green-primary cursor-pointer">
-                  <div className="flex items-center gap-1 text-[7px] font-bold">
-                    <Sparkles size={8} />
-                    3 Drafts
-                  </div>
-                  <ChevronRight size={10} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Predictive Demand */}
-          <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-50">
-            <div className="flex items-center gap-1 mb-2">
-              <Activity size={10} className="text-green-primary" />
-              <span className="text-[6px] font-bold text-green-primary uppercase tracking-widest">Demand</span>
-            </div>
-            <div className="flex flex-col lg:flex-row gap-4 items-center">
-              <div className="flex-1 space-y-2">
-                <h4 className="text-sm font-display font-bold text-text-dark">Insights</h4>
-                <div className="bg-green-50/50 p-2 rounded-lg border border-green-100 inline-block">
-                  <div className="text-[8px] font-medium text-text-dark">
-                    Rain + Concert = <span className="bg-green-primary text-white px-1 py-0.5 rounded font-bold">+15%</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-end gap-1 h-16">
-                {[40, 60, 50, 80, 100, 70, 45].map((h, i) => (
-                  <div key={i} className="relative group">
-                    <div 
-                      className={`w-4 rounded-t-sm transition-all ${i === 4 ? "bg-green-primary/60" : "bg-green-primary/20"}`} 
-                      style={{ height: `${h}%` }} 
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FAB */}
-      <div className="absolute bottom-4 right-4 w-7 h-7 bg-green-primary text-white rounded-lg shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
-        <Plus size={14} />
-      </div>
-    </div>
-  );
-};
-
-const Hero = () => {
-  return (
-    <section id="hero" className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-12 md:px-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-light/30 text-green-primary text-xs font-bold uppercase tracking-wider mb-6">
-            <Zap size={14} />
-            <span>AI-Powered Inventory</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-display font-extrabold text-text-dark leading-[1.1] mb-6">
-            Always one step <br />
-            <span className="text-coral italic">ahead</span> of the menu.
-          </h1>
-          <p className="text-base md:text-lg text-text-muted leading-relaxed mb-10 max-w-lg">
-            ShelfSmart predicts what your kitchen needs <span className="text-coral font-bold">before</span> you run short. Sync supplier orders, foot traffic, and local events into one intelligent workflow.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/waitlist">
-              <button className="bg-coral text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-coral/90 transition-all shadow-xl shadow-coral/20 flex items-center justify-center gap-2 group">
-                Join our Waitlist
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
-          </div>
-          
-          <div className="mt-12 flex items-center gap-6">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
-                  <img src={`https://picsum.photos/seed/user${i}/100/100`} alt="User" referrerPolicy="no-referrer" />
-                </div>
-              ))}
-            </div>
-            <div className="text-sm">
-              <span className="font-bold text-text-dark">500+ restaurants</span>
-              <p className="text-text-muted">trust ShelfSmart daily</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 30 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative"
-        >
-          <DashboardPreview />
-          
-          {/* Decorative elements */}
-          <div className="absolute -top-6 -right-6 w-24 h-24 bg-coral/20 rounded-full blur-2xl -z-10" />
-          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-green-light/30 rounded-full blur-3xl -z-10" />
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const FeatureCard = ({ icon: Icon, title, description, delay }: { icon: any, title: string, description: string, delay: number }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
-    className="glass-card p-8 rounded-[2rem] hover:scale-[1.02] transition-transform cursor-default group"
-  >
-    <div className="w-14 h-14 bg-green-light/20 text-green-primary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-primary group-hover:text-white transition-colors">
-      <Icon size={28} />
-    </div>
-    <h3 className="text-xl font-display font-bold text-text-dark mb-3">{title}</h3>
-    <p className="text-text-muted leading-relaxed text-sm">{description}</p>
-  </motion.div>
+// Replicas for missing icons
+const toastLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#F15A2B', fontWeight: 800, fontSize: '28px', fontFamily: 'system-ui, sans-serif', letterSpacing: '-1px' }}>
+    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M19 5c-1.3-.6-3.6-1-7-1s-5.7.4-7 1c-1.7.6-3 1.9-3 3.6v8.8c0 1.7 1.3 3.1 3 3.6 1.3.6 3.6 1 7 1s5.7-.4 7-1c1.7-.6 3-1.9 3-3.6V8.6C22 6.9 20.7 5.6 19 5zM12 19c-2.8 0-4.9-.3-6-.7-1-.3-1.5-1.1-1.5-1.9v-3c1.5 1 4 1.6 7.5 1.6s6-.6 7.5-1.6v3c0 .8-.5 1.6-1.5 1.9-1.1.4-3.2.7-6 .7zM19.5 11c-1.5 1-4 1.6-7.5 1.6S4.5 12 3 11V8.6c0-.8.5-1.6 1.5-1.9 1.1-.4 3.2-.7 6-.7s4.9.3 6 .7c1 .3 1.5 1.1 1.5 1.9V11z"/></svg>
+    toast
+  </div>
 );
 
-const Features = () => {
-  return (
-    <section id="features" className="py-24 px-6 relative bg-white z-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-sm font-bold text-green-primary uppercase tracking-[0.2em] mb-4">Features</h2>
-          <h3 className="text-4xl md:text-5xl font-display font-bold text-text-dark mb-6">Intelligence built for the kitchen.</h3>
-          <p className="text-text-muted max-w-2xl mx-auto text-lg">
-            ShelfSmart fuses real-world signals into automated, accurate inventory decisions — so you focus on cooking, not counting.
-          </p>
-        </div>
+const cloverLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00A859', fontWeight: 600, fontSize: '26px', fontFamily: 'system-ui, sans-serif', letterSpacing: '-0.5px' }}>
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="4"/></svg>
+    clover
+  </div>
+);
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard 
-            icon={TrendingUp}
-            title="Predictive Demand"
-            description="Fuses foot traffic, local events, and weather forecasts to project exactly what you'll need days in advance."
-            delay={0.1}
-          />
-          <FeatureCard 
-            icon={Zap}
-            title="Auto-Ordering"
-            description="When stock drops below thresholds, orders trigger automatically with your preferred suppliers."
-            delay={0.2}
-          />
-          <FeatureCard 
-            icon={BarChart3}
-            title="Real-time Sync"
-            description="Connects directly to your POS to track every sale and update inventory levels in milliseconds."
-            delay={0.3}
-          />
-          <FeatureCard 
-            icon={ShieldCheck}
-            title="Waste Reduction"
-            description="Smart algorithms identify slow-moving items and suggest menu adjustments to minimize spoilage."
-            delay={0.4}
-          />
-          <FeatureCard 
-            icon={Clock}
-            title="Time Savings"
-            description="Eliminate hours of manual counting. Our system handles the tracking so your team can stay focused."
-            delay={0.5}
-          />
-          <FeatureCard 
-            icon={ChefHat}
-            title="Recipe Mapping"
-            description="Automatically breaks down menu items into raw ingredients for precise inventory depletion tracking."
-            delay={0.6}
-          />
-        </div>
-      </div>
-    </section>
-  );
-};
+const openTableLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#DA3743', fontWeight: 700, fontSize: '24px', fontFamily: 'system-ui, sans-serif' }}>
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/></svg>
+    OpenTable
+  </div>
+);
 
-const HowItWorks = () => {
-  const steps = [
-    { title: "Connect Systems", desc: "Link your POS and supplier accounts in minutes." },
-    { title: "AI Analysis", desc: "ShelfSmart reads demand signals from weather and events." },
-    { title: "Smart Orders", desc: "Optimal orders are drafted or auto-placed for you." },
-    { title: "Zero Waste", desc: "Enjoy a perfectly stocked kitchen with zero effort." },
-  ];
+const grubhubLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', color: '#FF8000', fontWeight: 900, fontSize: '26px', fontFamily: 'system-ui, sans-serif', letterSpacing: '-0.5px' }}>
+    GRUBHUB
+  </div>
+);
 
-  return (
-    <section id="how-it-works" className="py-24 px-6 bg-mint relative z-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-sm font-bold text-green-primary uppercase tracking-[0.2em] mb-4">Process</h2>
-            <h3 className="text-4xl md:text-5xl font-display font-bold text-text-dark mb-6">From signals to shipment, automatically.</h3>
-          </div>
-          
-          <div className="space-y-12">
-            {steps.map((step, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex gap-8 items-start"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-green-primary text-white flex items-center justify-center font-display font-bold text-2xl flex-shrink-0 shadow-lg shadow-green-primary/20">
-                  {i + 1}
-                </div>
-                <div>
-                  <h4 className="text-2xl font-bold text-text-dark mb-3">{step.title}</h4>
-                  <p className="text-text-muted text-lg leading-relaxed">{step.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+const rotatingAdjectives = [
+  "modern", "casual", "upscale", "atmospheric", "cozy", "bustling", "minimalist", "rustic", "chic", "tableside", "grab-and-go", "authentic", "fusion", "experimental", "farm-to-table", "specialized", "artisanal", "global", "international", "premium", "luxury", "competitive", "romantic", "professional", "communal", "celebratory", "trendy",
+];
 
-const Testimonials = () => {
-  return (
-    <section id="about" className="py-24 px-6 bg-green-primary relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-        <div className="absolute top-10 left-10"><Leaf size={100} /></div>
-        <div className="absolute bottom-10 right-10"><Utensils size={100} /></div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto relative z-10">
-        <h2 className="text-3xl md:text-5xl font-display font-bold text-white text-center mb-16">
-          Loved by kitchens that <span className="italic opacity-80">refuse to guess.</span>
-        </h2>
+const trustBrands: { name: string; style: React.CSSProperties }[] = [
+  { name: 'Maison Clair',  style: { fontFamily: 'var(--font-serif)',    fontStyle: 'italic',  fontSize: '26px', fontWeight: 400, letterSpacing: '-0.02em' } },
+  { name: 'ORTOLAN',       style: { fontFamily: 'var(--font-display)',  fontStyle: 'normal',  fontSize: '12px', fontWeight: 700, letterSpacing: '0.22em',  textTransform: 'uppercase' } },
+  { name: 'KITŌ',          style: { fontFamily: 'var(--font-mono-new)', fontStyle: 'normal',  fontSize: '15px', fontWeight: 400, letterSpacing: '0.28em',  textTransform: 'uppercase' } },
+  { name: 'Bellweather',   style: { fontFamily: 'var(--font-display)',  fontStyle: 'normal',  fontSize: '22px', fontWeight: 300, letterSpacing: '-0.03em' } },
+  { name: 'Hōjō & Sons',   style: { fontFamily: 'var(--font-serif)',    fontStyle: 'italic',  fontSize: '22px', fontWeight: 400, letterSpacing: '-0.01em' } },
+  { name: 'Verdoye',       style: { fontFamily: 'var(--font-display)',  fontStyle: 'normal',  fontSize: '24px', fontWeight: 800, letterSpacing: '-0.04em' } },
+];
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              text: "We used to run out of salmon every Friday. ShelfSmart saw the weekend spike coming and had our order in by Wednesday. Game changer.",
-              author: "Marcus T.",
-              role: "Executive Chef, The Pearl Bistro"
-            },
-            {
-              text: "Our food cost dropped by 28% in the first two months. The scale integration alone paid for itself. I can't imagine running inventory the old way.",
-              author: "Priya K.",
-              role: "Owner, Spice Route Café"
-            },
-            {
-              text: "The Toast sync is seamless. When we 86 something, it knows. When we run a special, it adjusts. It's like having a full-time manager who never sleeps.",
-              author: "James L.",
-              role: "GM, Harbor House Kitchen"
-            }
-          ].map((t, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="bg-white/10 backdrop-blur-sm border border-white/20 p-8 rounded-[2rem] text-white"
-            >
-              <div className="flex gap-1 mb-6 text-green-light">
-                {[1, 2, 3, 4, 5].map(s => <span key={s}>★</span>)}
-              </div>
-              <p className="text-lg italic mb-8 opacity-90 leading-relaxed">"{t.text}"</p>
-              <div>
-                <div className="font-bold text-green-light">{t.author}</div>
-                <div className="text-sm opacity-60">{t.role}</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+const trustTexts = [
+  <React.Fragment key="trust">
+    {trustBrands.map(({ name, style }, i) => (
+      <React.Fragment key={i}>
+        <span className="trust-pill" style={style}>{name}</span>
+        <span className="trust-sep" aria-hidden="true">·</span>
+      </React.Fragment>
+    ))}
+  </React.Fragment>
+];
 
-const Footer = () => {
-  return (
-    <footer className="bg-white pt-20 pb-10 px-6 relative z-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-12 mb-16">
-          <div className="col-span-2">
-            <div className="flex items-center gap-2 mb-6">
-              <img src={LOGO_ICON} alt="ShelfSmart Icon" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
-              <img src={LOGO_TEXT} alt="ShelfSmart" className="h-6 object-contain" referrerPolicy="no-referrer" />
-            </div>
-            <p className="text-text-muted max-w-sm leading-relaxed">
-              The intelligent inventory platform for the modern kitchen. Reduce waste, save time, and maximize profits with AI-driven insights.
-            </p>
-          </div>
-          
-          <div>
-            <h4 className="font-bold text-text-dark mb-6">Product</h4>
-            <ul className="space-y-4 text-sm text-text-muted">
-              <li><a href="#" className="hover:text-green-primary transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-green-primary transition-colors">Integrations</a></li>
-              <li><a href="#" className="hover:text-green-primary transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-green-primary transition-colors">Changelog</a></li>
-            </ul>
-          </div>
+const integrationLogos = [
+  { node: toastLogo(), ariaLabel: "Toast POS", href: "https://pos.toasttab.com/" },
+  { node: cloverLogo(), ariaLabel: "Clover", href: "https://www.clover.com/" },
+  { node: <SiSquare size={36} color="#000000" />, ariaLabel: "Square", href: "https://squareup.com/" },
+  { node: openTableLogo(), ariaLabel: "OpenTable", href: "https://www.opentable.com/" },
+  { node: <SiUbereats size={36} color="#06C167" />, ariaLabel: "Uber Eats", href: "https://www.ubereats.com/" },
+  { node: <SiDoordash size={36} color="#FF3008" />, ariaLabel: "DoorDash", href: "https://www.doordash.com/" },
+  { node: grubhubLogo(), ariaLabel: "Grubhub", href: "https://www.grubhub.com/" },
+  { node: <SiDeliveroo size={36} color="#00CCBC" />, ariaLabel: "Deliveroo", href: "https://deliveroo.co.uk/" }
+];
 
-          <div>
-            <h4 className="font-bold text-text-dark mb-6">Company</h4>
-            <ul className="space-y-4 text-sm text-text-muted">
-              <li><a href="#" className="hover:text-green-primary transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-green-primary transition-colors">Careers</a></li>
-              <li><Link to="/contact" className="hover:text-green-primary transition-colors">Contact</Link></li>
-              <li><a href="#" className="hover:text-green-primary transition-colors">Privacy Policy</a></li>
-            </ul>
-          </div>
-        </div>
-        
-        <div className="pt-10 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-text-muted">© 2025 ShelfSmart Inc. All rights reserved.</p>
-          <div className="flex gap-6">
-            {/* Social icons placeholder */}
-            <div className="w-5 h-5 bg-gray-100 rounded-full" />
-            <div className="w-5 h-5 bg-gray-100 rounded-full" />
-            <div className="w-5 h-5 bg-gray-100 rounded-full" />
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+const previewTaglines: Record<string, { label: string; text: string }> = {
+  "/": {
+    label: "Dashboard",
+    text: "Forecasted guests, critical SKUs, and live agent signals in one glance.",
+  },
+  "/inventory": {
+    label: "Inventory",
+    text: "Ledger view with stock depth, reorder points, and depletion signals.",
+  },
+  "/suppliers": {
+    label: "Suppliers",
+    text: "Vendor reliability, inbound coverage, and market intelligence.",
+  },
+  "/analytics": {
+    label: "Analytics",
+    text: "Influence breakdowns and demand velocity projections.",
+  },
+  "/settings": {
+    label: "Settings",
+    text: "Company profile, integrations, and API access controls.",
+  },
 };
 
 export default function Home() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [previewPath, setPreviewPath] = useState("/");
+  const [statsInView, setStatsInView] = useState(false);
+  const statsRef = useRef<HTMLDivElement | null>(null);
+
+
+  const activeTagline = previewTaglines[previewPath] || previewTaglines["/"];
+
+  useEffect(() => {
+    // Reveal on scroll
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal, .rise').forEach(el => revealObserver.observe(el));
+
+    // Active nav link tracking
+    const navLinks = document.querySelectorAll('.nav-links a[data-nav]');
+    const sectionIds = ['features', 'how', 'pricing'];
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    const setActive = (id: string) => {
+      navLinks.forEach(a => {
+        const href = a.getAttribute('href');
+        if (href === '#' + id) a.classList.add('active');
+        else a.classList.remove('active');
+      });
+    };
+
+    const activeObserver = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible.length && visible[0].target.id) setActive(visible[0].target.id);
+    }, {
+      rootMargin: '-35% 0px -55% 0px',
+      threshold: [0, 0.25, 0.5, 0.75, 1]
+    });
+    sections.forEach(s => activeObserver.observe(s));
+
+    const handleScrollNav = () => {
+      if (window.scrollY < 400) {
+        navLinks.forEach(a => a.classList.remove('active'));
+      }
+    };
+    window.addEventListener('scroll', handleScrollNav, { passive: true });
+
+    // Smooth scroll for anchors
+    const handleAnchorClick = (e: Event) => {
+      const anchor = e.currentTarget as HTMLAnchorElement;
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#' || href.startsWith('/')) return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top, behavior: 'smooth' });
+      window.history.pushState(null, '', href);
+    };
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', handleAnchorClick);
+    });
+
+    // Nav subtle shrink
+    const nav = document.querySelector('.nav-inner') as HTMLElement;
+    const handleNavShadow = () => {
+      if (nav) {
+        if (window.scrollY > 40) nav.style.boxShadow = '0 10px 30px rgba(14,18,16,.08)';
+        else nav.style.boxShadow = '0 4px 20px rgba(14,18,16,.04)';
+      }
+    };
+    window.addEventListener('scroll', handleNavShadow, { passive: true });
+
+    // Tilt preview — both scroll and hover tilt live on the outer frame so the border glow follows
+    const frame = document.querySelector('.preview-frame') as HTMLElement;
+    let ticking = false;
+    let isHovered = false;
+    let lastScrollX = 0;
+    let leaveTimer: ReturnType<typeof setTimeout>;
+    const MAX_TILT = 6;
+    // Buffer prevents oscillation at edges: card must be this many px past the border before leave fires
+    const EDGE_BUFFER = 80;
+
+    const applyTilt = (rotateX: number, rotateY: number, withTransition = false) => {
+      if (!frame) return;
+      if (withTransition) frame.style.transition = 'transform 0.5s cubic-bezier(.2,.8,.2,1)';
+      frame.style.transform = `perspective(1600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    };
+
+    const handleTilt = () => {
+      if (isHovered || !frame) return;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const r = frame.getBoundingClientRect();
+          const vh = window.innerHeight;
+          const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / vh));
+          lastScrollX = -p * 1.8;
+          applyTilt(lastScrollX, -8);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Single window-level handler avoids enter/leave oscillation at tilted edges
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!frame) return;
+      const rect = frame.getBoundingClientRect();
+      const inside =
+        e.clientX >= rect.left - EDGE_BUFFER && e.clientX <= rect.right + EDGE_BUFFER &&
+        e.clientY >= rect.top - EDGE_BUFFER && e.clientY <= rect.bottom + EDGE_BUFFER;
+
+      if (inside) {
+        clearTimeout(leaveTimer);
+        if (!isHovered) isHovered = true;
+        frame.style.transition = '';
+        const normX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const normY = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        applyTilt(-normY * MAX_TILT, normX * MAX_TILT);
+      } else if (isHovered) {
+        isHovered = false;
+        applyTilt(lastScrollX, -8, true);
+        leaveTimer = setTimeout(() => { if (frame) frame.style.transition = ''; }, 500);
+      }
+    };
+
+    if (frame && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      applyTilt(0, -8); // initial resting tilt before first scroll
+      window.addEventListener('scroll', handleTilt, { passive: true });
+      window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    }
+
+    return () => {
+      revealObserver.disconnect();
+      activeObserver.disconnect();
+      window.removeEventListener('scroll', handleScrollNav);
+      window.removeEventListener('scroll', handleNavShadow);
+      window.removeEventListener('scroll', handleTilt);
+      clearTimeout(leaveTimer);
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.removeEventListener('click', handleAnchorClick);
+      });
+    };
+  }, []);
+
+  useEffect(() => {
+    const target = statsRef.current;
+    if (!target) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setStatsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setStatsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleWaitlistSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("submitting");
+
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid) {
+      setStatus("error");
+      return;
+    }
+
+    const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
+    if (!endpoint) {
+      console.warn("VITE_FORMSPREE_ENDPOINT is not set.");
+      setTimeout(() => setStatus("success"), 1000);
+      return;
+    }
+
+    try {
+      const fd = new FormData();
+      fd.append("email", email);
+      fd.append("_subject", "New Waitlist Signup (Landing Page)!");
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: fd,
+        headers: { Accept: "application/json" },
+      });
+      if (response.ok) setStatus("success");
+      else setStatus("error");
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
-    <div className="min-h-screen selection:bg-green-light selection:text-green-primary relative">
-      <BackgroundIcons />
-      <Navbar />
-      
-      <main>
-        <Hero />
-        
-        {/* Trusted By Bar */}
-        <section className="py-10 border-y border-gray-100 bg-white relative z-10 overflow-hidden">
-          <div className="relative flex whitespace-nowrap">
-            <motion.div 
-              animate={{ x: [ "-50%", "0%" ] }}
-              transition={{ 
-                duration: 30, 
-                repeat: Infinity, 
-                ease: "linear" 
-              }}
-              className="flex items-center gap-16 px-8 opacity-40 grayscale"
-            >
-              {[
-                "TOAST", "SYSCO", "US FOODS", "SQUARE", "CLOVER", "DOORDASH", "UBER EATS", "GRUBHUB"
-              ].map((brand, i) => (
-                <span key={i} className="text-2xl font-bold font-display tracking-widest">{brand}</span>
-              ))}
-              {/* Duplicate for seamless loop */}
-              {[
-                "TOAST", "SYSCO", "US FOODS", "SQUARE", "CLOVER", "DOORDASH", "UBER EATS", "GRUBHUB"
-              ].map((brand, i) => (
-                <span key={`dup-${i}`} className="text-2xl font-bold font-display tracking-widest">{brand}</span>
-              ))}
-            </motion.div>
-          </div>
-        </section>
+    <div className="ss2">
 
-        <Features />
-        <HowItWorks />
-        <Testimonials />
+      <span id="top" aria-hidden="true"></span>
 
-        {/* Final CTA */}
-        <section id="pricing" className="py-32 px-6 text-center relative overflow-hidden bg-mint z-10">
-          <div className="max-w-3xl mx-auto relative z-10">
-            <h2 className="text-5xl md:text-7xl font-display font-extrabold text-text-dark mb-8">
-              Ready to <span className="text-coral">smart</span> up your shelves?
-            </h2>
-            <p className="text-xl text-text-muted mb-12 leading-relaxed">
-              Join 500+ restaurants already saving 20+ hours a month on inventory management.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/waitlist">
-                <button className="bg-coral text-white px-10 py-5 rounded-full text-xl font-bold hover:bg-coral/90 transition-all shadow-2xl shadow-coral/20 flex items-center justify-center gap-3 group">
-                  Join our Waitlist
-                  <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-              </Link>
+      {/* ==========================================================
+     NAV
+     ========================================================== */}
+      <nav className="nav">
+        <div className="container">
+          <div className="nav-inner">
+            <a className="brand" href="#top" aria-label="ShelfSmart home">
+              <img className="brand-mark" src={logoIcon} alt="" width="30" height="30" />
+              <img src={logoText} alt="ShelfSmart" style={{ height: '20px', marginLeft: '8px' }} />
+            </a>
+            <div className="nav-links">
+              <a href="#features" data-nav>Features</a>
+              <a href="#how" data-nav>How it works</a>
+              <a href="#pricing" data-nav>Pricing</a>
             </div>
-            <p className="mt-8 text-sm text-text-muted italic">Our experts handle the entire implementation and setup for your kitchen.</p>
+            <Link className="nav-cta" href="#waitlist" to="/waitlist">
+              Join waitlist
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+            </Link>
           </div>
-        </section>
-      </main>
+        </div>
+      </nav>
 
-      <Footer />
+      {/* ==========================================================
+     HERO
+     ========================================================== */}
+      <section className="hero">
+        <div className="container hero-grid">
+          <div className="hero-text-col">
+            <span className="eyebrow rise d1">
+              <span className="dot"></span>
+              Powered by · S.M.A.R.T forecasting
+            </span>
+
+            <h1 className="hero-title rise d2">
+              Inventory <em>intelligence</em><br />
+              for<br />
+              <span className="hero-adj-line">
+                <LayoutGroup id="hero-adj">
+                  <RotatingText
+                    texts={rotatingAdjectives}
+                    rotationInterval={2700}
+                    staggerDuration={0.025}
+                    staggerFrom="last"
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "-120%" }}
+                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                    splitLevelClassName="rotating-split-level"
+                    mainClassName="rotating-adjective"
+                  />
+                  <motion.span
+                    layout="position"
+                    transition={{ type: "spring", damping: 35, stiffness: 250 }}
+                    style={{ originX: 0 }}
+                  >
+                    {" "}kitchens.
+                  </motion.span>
+                </LayoutGroup>
+              </span>
+            </h1>
+
+            <p className="hero-sub rise d3">
+              ShelfSmart turns guest forecasts, supplier feeds, and shelf counts into one calm dashboard —
+              so you stop guessing what to order and start knowing exactly what tonight needs.
+            </p>
+
+            <div className="hero-ctas rise d4">
+              <Link href="#waitlist" className="btn btn-primary" to="/waitlist">
+                Join waitlist — be first in
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+              </Link>
+              <a href="#preview" className="btn btn-ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                See the dashboard
+              </a>
+            </div>
+
+            <div className="hero-meta rise d5">
+              <span><span className="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg></span> Connects to 30+ POS systems</span>
+              <span><span className="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg></span> Live in under 24 hours</span>
+              <span><span className="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg></span> Early-access pricing</span>
+            </div>
+          </div>
+
+          <div className="hero-visual-col rise d5" style={{ perspective: '1600px', justifySelf: 'start', width: '100%' }} id="preview">
+            <BorderGlow
+              className="preview-frame"
+              borderRadius={24}
+              edgeSensitivity={44}
+              glowRadius={36}
+              glowIntensity={1.15}
+              glowColor="140 55 60"
+              backgroundColor="var(--paper)"
+              coneSpread={28}
+              colors={['#3DA35D', '#96E072', '#17b26a']}
+              glowReach={120}
+              animated
+            >
+              <div className="preview-tilt">
+                <LiveDashboardPreview onPathChange={setPreviewPath} />
+              </div>
+            </BorderGlow>
+            <div key={previewPath} className="preview-tagline">
+              <span className="preview-tagline__label">{activeTagline.label}</span>
+              <span className="preview-tagline__text">{activeTagline.text}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     TRUST
+     ========================================================== */}
+      <section className="trust">
+        <div className="container">
+          <p className="trust-label reveal">Trusted by kitchens plating <em style={{ fontFamily: "var(--font-serif)" }}>12M+</em> covers a year</p>
+          <div className="trust-logos reveal">
+            <ScrollVelocity
+              texts={trustTexts}
+              velocity={60}
+              numCopies={4}
+              className="trust-copy"
+              parallaxClassName="trust-parallax"
+              scrollerClassName="trust-scroller"
+              velocityMapping={{ input: [0, 1000], output: [0, 0] }}
+            />
+          </div>
+          <div className="trust-integrations reveal" style={{ marginTop: '3rem' }}>
+            <span className="integrations-label">Integrations</span>
+            <div style={{ position: 'relative', height: '60px', overflow: 'hidden' }}>
+              <LogoLoop
+                logos={integrationLogos}
+                speed={85}
+                direction="left"
+                logoHeight={36}
+                gap={48}
+                scaleOnHover
+                fadeOut
+                fadeOutColor="var(--color-bone)"
+                ariaLabel="Technology partners"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     FEATURES
+     ========================================================== */}
+      <section className="section" id="features">
+        <div className="container">
+          <div className="section-head reveal">
+            <span className="section-kicker">Built for service</span>
+            <h2 className="section-title">Three dials <em>every operator</em> wishes they had.</h2>
+            <p className="section-sub">Most tools show you yesterday. ShelfSmart shows you tonight. Forecasting, shelf intelligence, and supplier flow — in one pane.</p>
+          </div>
+
+          <div className="features">
+            {/* Forecast */}
+            <article className="feature dark reveal">
+              <span className="f-label">01 · Forecasting</span>
+              <h3 className="f-title">Predicted guests, <em>not wishful thinking.</em></h3>
+              <p className="f-desc">Blend weather, local events, reservations and historical lifts into one number. Updated every 15 minutes.</p>
+              <div className="f-visual">
+                <div className="f-forecast" style={{ height: "65px" }}>
+                  <div className="bar" style={{ height: "40%" }}></div>
+                  <div className="bar" style={{ height: "55%" }}></div>
+                  <div className="bar peak" style={{ height: "90%" }}></div>
+                  <div className="bar" style={{ height: "70%" }}></div>
+                  <div className="bar" style={{ height: "45%" }}></div>
+                  <div className="bar" style={{ height: "60%" }}></div>
+                  <div className="bar peak" style={{ height: "85%" }}></div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginTop: '8px', textAlign: 'center', fontFamily: 'var(--font-mono-new)', fontSize: '10.5px', color: 'var(--muted-2)', textTransform: 'uppercase' }}>
+                  <span>Mon</span><span>Tue</span><span style={{ color: 'var(--cream)', fontWeight: 500 }}>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span style={{ color: 'var(--cream)', fontWeight: 500 }}>Sun</span>
+                </div>
+              </div>
+            </article>
+
+            {/* Shelf intelligence */}
+            <article className="feature reveal">
+              <span className="f-label">02 · Shelf intelligence</span>
+              <h3 className="f-title">Know what's <em>running thin</em> before service does.</h3>
+              <p className="f-desc">Every SKU tied to a reorder point, a supplier lead time, and tonight's forecast. Silent until something matters.</p>
+              <div className="f-visual">
+                <div className="f-list">
+                  <div className="f-list-row crit"><span className="sq"></span><span className="name">Burrata 125g</span><span className="tag">2.4 kg · critical</span></div>
+                  <div className="f-list-row warn"><span className="sq"></span><span className="name">San Marzano</span><span className="tag">6 tins · low</span></div>
+                  <div className="f-list-row ok"><span className="sq"></span><span className="name">Olive oil, Tuscan</span><span className="tag">12 L · ok</span></div>
+                  <div className="f-list-row ok"><span className="sq"></span><span className="name">Fiori di zucca</span><span className="tag">48 pcs · ok</span></div>
+                </div>
+              </div>
+            </article>
+
+            {/* Supplier flow */}
+            <article className="feature reveal">
+              <span className="f-label">03 · Supplier flow</span>
+              <h3 className="f-title">One order button, <em>zero spreadsheets.</em></h3>
+              <p className="f-desc">Draft, approve, and dispatch orders to every supplier from one screen. Track each delivery down to the crate.</p>
+              <div className="f-visual">
+                <div className="f-track" style={{ background: "var(--ink)", borderRadius: "14px", padding: "30px 20px", color: "var(--cream)" }}>
+                  <div className="line"></div>
+                  <div className="node done" style={{ left: "10%" }}></div>
+                  <div className="lbl" style={{ left: "10%" }}>Drafted</div>
+                  <div className="node done" style={{ left: "37%" }}></div>
+                  <div className="lbl" style={{ left: "37%" }}>Sent</div>
+                  <div className="node active" style={{ left: "64%" }}></div>
+                  <div className="lbl" style={{ left: "64%" }}>In transit</div>
+                  <div className="node" style={{ left: "91%" }}></div>
+                  <div className="lbl" style={{ left: "91%" }}>Received</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     BEFORE/AFTER SPLIT
+     ========================================================== */}
+      <section className="section" style={{ paddingTop: "40px" }}>
+        <div className="container">
+          <div className="section-head reveal">
+            <span className="section-kicker">The shift</span>
+            <h2 className="section-title">From <em>guesswork</em> to a kitchen that <em>knows.</em></h2>
+          </div>
+          <div className="split-grid">
+            <div className="split-card before reveal">
+              <span className="badge">Before ShelfSmart</span>
+              <h3>A Sunday prep built on <em>hope.</em></h3>
+              <ul>
+                <li>Monday spreadsheets that are Wednesday-stale</li>
+                <li>Chef texting suppliers from memory at 11pm</li>
+                <li>Weekend 86s because a weather spike wasn't priced in</li>
+                <li>Month-end variance no one can explain</li>
+                <li>Three tools, four tabs, one exhausted manager</li>
+              </ul>
+            </div>
+            <div className="split-card after reveal">
+              <span className="badge">After ShelfSmart</span>
+              <h3>One screen. <em>One decision.</em> Service on.</h3>
+              <ul>
+                <li>Forecasts that move with the weather, events, and rezzies</li>
+                <li>Auto-drafted POs the chef approves in 30 seconds</li>
+                <li>Critical SKUs flagged at 8am, not 8pm</li>
+                <li>Variance attributed per dish, per night, per supplier</li>
+                <li>Everything — procurement, stock, calendar — in one calm view</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     STATS BAND
+     ========================================================== */}
+      <section className="section" style={{ paddingTop: "40px" }}>
+        <div className="container">
+          <div className="stat-band reveal" ref={statsRef}>
+            <div className="stat-grid">
+              <div className="stat-item">
+                <div className="num">−<CountUp to={38} duration={1.6} startWhen={statsInView} /><em>%</em></div>
+                <div className="lbl">Average reduction in food waste within 60 days</div>
+              </div>
+              <div className="stat-item">
+                <div className="num"><CountUp to={4.2} duration={1.8} startWhen={statsInView} /><em>h</em></div>
+                <div className="lbl">Manager hours saved per week on ordering</div>
+              </div>
+              <div className="stat-item">
+                <div className="num"><CountUp to={91} duration={1.6} startWhen={statsInView} /><em>%</em></div>
+                <div className="lbl">Forecast accuracy across partner restaurants</div>
+              </div>
+              <div className="stat-item">
+                <div className="num"><CountUp to={24} duration={1.6} startWhen={statsInView} /><em>h</em></div>
+                <div className="lbl">From install to first predictive service</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     HOW IT WORKS
+     ========================================================== */}
+      <section className="section" id="how">
+        <div className="container">
+          <div className="section-head reveal">
+            <span className="section-kicker">How it works</span>
+            <h2 className="section-title">Three evenings <em>to a smarter kitchen.</em></h2>
+          </div>
+          <div className="steps">
+            {/* ── Step 01: green / connect ── */}
+            <div className="step step--01 reveal">
+              <div className="step-num">01</div>
+              <div className="step-body">
+                <h4>Connect your POS &amp; suppliers</h4>
+                <p>We pull two years of covers, items and invoices. Thirty-plus POS integrations. No spreadsheets, no sales calls, no CSV gymnastics.</p>
+              </div>
+              <div className="step-visual">
+                <div className="card card--01">
+                  <div className="card-accent-bar card-accent-bar--green"/>
+                  <div className="row"><span>Toast POS</span><strong className="chip chip--green">✓ connected</strong></div>
+                  <div className="row"><span>Sysco · East Bay</span><strong className="chip chip--green">✓ connected</strong></div>
+                  <div className="row"><span>Local Greens Co.</span><strong className="chip chip--green">✓ connected</strong></div>
+                  <div className="row"><span>Historical data</span><strong className="chip chip--ink">2y 3mo</strong></div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Step 02: indigo / learn ── */}
+            <div className="step step--02 step--reversed reveal">
+              <div className="step-num">02</div>
+              <div className="step-body">
+                <h4>We learn your kitchen</h4>
+                <p>Models train on your specific patterns — which dishes move on rainy Thursdays, which wine pairs with what, which supplier slips when.</p>
+              </div>
+              <div className="step-visual">
+                <div className="card card--02">
+                  <div className="card-accent-bar card-accent-bar--indigo"/>
+                  <div className="row"><span>Weather uplift</span><strong className="chip chip--blue">+12% Fri rain</strong></div>
+                  <div className="row"><span>Event uplift</span><strong className="chip chip--purple">+170 covers Mon</strong></div>
+                  <div className="row"><span>SKU elasticity</span><strong className="chip chip--ink">328 mapped</strong></div>
+                  <div className="row"><span>Supplier ETA</span><strong className="chip chip--green">±0.6 days</strong></div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Step 03: amber / operate ── */}
+            <div className="step step--03 reveal">
+              <div className="step-num">03</div>
+              <div className="step-body">
+                <h4>Cook with confidence</h4>
+                <p>Every morning: tonight's guest count, what to prep, what to order, who to call. Every evening: variance you can act on.</p>
+              </div>
+              <div className="step-visual">
+                <div className="card card--03">
+                  <div className="card-accent-bar card-accent-bar--amber"/>
+                  <div className="row"><span>Tonight's forecast</span><strong className="chip chip--ink">465 covers</strong></div>
+                  <div className="row"><span>Drafts awaiting</span><strong className="chip chip--amber">3 POs</strong></div>
+                  <div className="row"><span>Critical SKUs</span><strong className="chip chip--green">0 live</strong></div>
+                  <div className="row"><span>Status</span><strong className="chip chip--green">● optimal</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     PRICING
+     ========================================================== */}
+      <section className="section" id="pricing">
+        <div className="container">
+          <div className="section-head reveal">
+            <span className="section-kicker">Pricing</span>
+            <h2 className="section-title">Pays for itself <em>by the third Saturday.</em></h2>
+            <p className="section-sub">One price per venue. No per-user fees, no integration tax, no six-month contracts.</p>
+          </div>
+          <div className="pricing">
+            <div className="price reveal">
+              <div className="price-head">
+                <div className="price-name">Starter</div>
+                <div className="price-tag">Single venue</div>
+              </div>
+              <div className="price-amt"><span className="num">$149</span><span className="per">/ venue / month</span></div>
+              <div className="price-desc">Everything a single kitchen needs to stop ordering blind.</div>
+              <ul>
+                <li>Predicted guests &amp; forecast calendar</li>
+                <li>Up to 500 SKUs tracked</li>
+                <li>5 supplier integrations</li>
+                <li>Email &amp; chat support</li>
+              </ul>
+              <a href="#" className="btn btn-ghost">Start 14-day trial</a>
+            </div>
+            <div className="price pro reveal">
+              <div className="price-head">
+                <div className="price-name">Group</div>
+                <div className="price-tag">Most chosen</div>
+              </div>
+              <div className="price-amt"><span className="num">$349</span><span className="per">/ venue / month</span></div>
+              <div className="price-desc">For multi-venue groups, chef collectives, and hospitality teams.</div>
+              <ul>
+                <li>Everything in Starter</li>
+                <li>Unlimited SKUs &amp; suppliers</li>
+                <li>Cross-venue analytics &amp; transfers</li>
+                <li>Dedicated success chef-partner</li>
+                <li>API access &amp; SSO</li>
+              </ul>
+              <a href="#" className="btn btn-primary">Book a walkthrough</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     FINAL CTA
+     ========================================================== */}
+      <section className="container" id="waitlist">
+        <div className="cta-band reveal">
+          <span className="section-kicker" style={{ color: "var(--green-2)", marginBottom: "20px" }}>Early access · Spring 2026</span>
+          <h2>Tonight deserves <em>a smarter kitchen.</em></h2>
+          <p>Join the waitlist for priority onboarding, founding-member pricing, and a 30-minute walkthrough with a chef-partner before you commit.</p>
+          <form className="waitlist-form" id="waitlistForm" onSubmit={handleWaitlistSubmit} noValidate>
+            <div className="waitlist-fields">
+              <input type="email" id="waitlistEmail" name="email" placeholder="your@restaurant.com" required aria-label="Email address" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} readOnly={status === "success"} />
+              <button type="submit" className="btn btn-primary" disabled={status === "submitting" || status === "success"} style={status === "success" ? { background: "var(--green-2)" } : {}}>
+                {status === "submitting" ? "Saving..." : status === "success" ? "Saved" : "Join waitlist"}
+                {status !== "success" && status !== "submitting" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>}
+              </button>
+            </div>
+            <p className={`waitlist-note ${status === "error" ? "error" : status === "success" ? "success" : ""}`} id="waitlistNote">
+              {status === "error" ? "Please enter a valid email address, or try again." : status === "success" ? `✓ You're in. We'll be in touch at ${email}.` : "No spam. One email when your spot opens."}
+            </p>
+          </form>
+        </div>
+      </section>
+
+      {/* ==========================================================
+     FOOTER
+     ========================================================== */}
+      <footer className="foot container">
+        <div className="foot-top">
+          <div className="foot-brand">
+            <a className="brand" href="#top" aria-label="ShelfSmart home">
+              <img className="brand-mark" src={logoIcon} alt="ShelfSmart Icon" />
+              <img className="brand-name-img" src={logoText} alt="ShelfSmart" style={{ height: "24px" }} />
+            </a>
+            <p>Inventory intelligence for modern kitchens. Made with too many late-night orders by a team of chefs and engineers.</p>
+          </div>
+          <div className="foot-cols">
+            <div className="foot-col">
+              <h5>Product</h5>
+              <a href="#features">Features</a>
+              <a href="#how">How it works</a>
+              <a href="#preview">Dashboard</a>
+              <a href="#pricing">Pricing</a>
+            </div>
+            <div className="foot-col">
+              <h5>Company</h5>
+              <a href="#">About</a>
+              <a href="#">Customers</a>
+              <a href="#">Careers</a>
+              <Link to="/contact">Contact</Link>
+            </div>
+            <div className="foot-col">
+              <h5>Resources</h5>
+              <a href="#">Docs</a>
+              <a href="#">Guides</a>
+              <a href="#">Status</a>
+              <a href="#">Support</a>
+            </div>
+          </div>
+        </div>
+        <div className="foot-bottom">
+          <span>© 2026 ShelfSmart Labs · <em>made for the back of house.</em></span>
+          <span>Tempe, AZ · Paris, FR · Tokyo, JP</span>
+        </div>
+      </footer>
+
+
     </div>
   );
 }

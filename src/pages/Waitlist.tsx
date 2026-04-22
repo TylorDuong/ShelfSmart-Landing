@@ -1,6 +1,4 @@
-import { motion } from "motion/react";
 import React, { useState } from "react";
-import { ArrowRight, CheckCircle2, ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Waitlist() {
@@ -13,7 +11,6 @@ export default function Waitlist() {
     const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
     if (!endpoint) {
       console.warn("VITE_FORMSPREE_ENDPOINT is not set.");
-      // Simulate success if no endpoint set (for development)
       setTimeout(() => setStatus("success"), 1000);
       return;
     }
@@ -22,110 +19,98 @@ export default function Waitlist() {
       const response = await fetch(endpoint, {
         method: "POST",
         body: new FormData(e.currentTarget),
-        headers: {
-          Accept: "application/json",
-        },
+        headers: { Accept: "application/json" },
       });
-
-      if (response.ok) {
-        setStatus("success");
-      } else {
-        setStatus("error");
-      }
-    } catch (error) {
+      if (response.ok) setStatus("success");
+      else setStatus("error");
+    } catch {
       setStatus("error");
     }
   };
 
   return (
-    <div className="min-h-screen bg-mint flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      {/* Decorative blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-green-light/30 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-coral/10 rounded-full blur-3xl -z-10" />
-
-      <div className="w-full max-w-md relative z-10">
-        <Link to="/" className="inline-flex items-center gap-2 text-text-muted hover:text-green-primary transition-colors mb-8 font-medium">
-          <ChevronLeft size={20} />
+    <div className="ss2" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '40px 20px' }}>
+      <div className="container" style={{ maxWidth: 640, margin: 'auto' }}>
+        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 500, color: 'var(--muted)', marginBottom: 40, transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--ink-new)'} onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
           Back to Home
         </Link>
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-green-primary/5 border border-white"
-        >
+        <div className="paper-card" style={{ padding: '48px 40px', borderRadius: 24 }}>
           {status === "success" ? (
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center py-8"
-            >
-              <div className="w-20 h-20 bg-green-50 text-green-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle2 size={40} />
+            <div style={{ textAlign: 'center', padding: '20px 0' }}>
+              <div style={{ width: 64, height: 64, background: 'var(--green-soft)', color: 'var(--green-2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
               </div>
-              <h2 className="text-3xl font-display font-bold text-text-dark mb-4">You're on the list!</h2>
-              <p className="text-text-muted mb-8 leading-relaxed">
-                Thanks for joining. We'll be in touch soon with your early access invitation.
+              <h2 style={{ fontSize: 36, letterSpacing: '-0.025em', fontWeight: 600, color: 'var(--ink-new)', marginBottom: 16 }}>
+                You're on the list!
+              </h2>
+              <p style={{ color: 'var(--ink-soft-new)', fontSize: 16, lineHeight: 1.5, marginBottom: 32 }}>
+                Thank you for your interest in ShelfSmart. We are excited to help you eliminate kitchen guesswork. We'll be in touch soon with your early access invitation.
               </p>
-              <Link to="/">
-                <button className="bg-gray-100 text-text-dark px-8 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors w-full">
-                  Return Home
-                </button>
+              <Link to="/" className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }}>
+                Return to Home
               </Link>
-            </motion.div>
+            </div>
           ) : (
             <>
-              <h2 className="text-4xl font-display font-extrabold text-text-dark mb-2">
-                Join the <span className="text-green-primary">Waitlist</span>
+              <div className="eyebrow" style={{ marginBottom: 16 }}>
+                <span className="dot"></span> Early Access
+              </div>
+              <h2 style={{ fontSize: 40, letterSpacing: '-0.03em', fontWeight: 600, color: 'var(--ink-new)', marginBottom: 16, lineHeight: 1.1 }}>
+                Join the <em style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontWeight: 400, color: 'var(--ink-soft-new)' }}>Waitlist</em>
               </h2>
-              <p className="text-text-muted mb-8">
-                Be the first to know when we launch and get exclusive early access pricing.
+              <p style={{ color: 'var(--ink-soft-new)', fontSize: 16, lineHeight: 1.5, marginBottom: 40 }}>
+                ShelfSmart is an AI that predicts exactly what your kitchen needs, down to the last onion. 
+                Thank you for your interest—join the waitlist below to be the first to know when we launch and secure exclusive early access pricing.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div>
-                  <label htmlFor="name" className="block text-sm font-bold text-text-dark mb-2">Name or Company</label>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-new)', marginBottom: 8 }}>Name or Company</label>
                   <input
                     type="text"
-                    id="name"
                     name="name"
                     required
-                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-green-primary/30 transition-all placeholder:text-gray-400"
+                    style={{ width: '100%', background: '#fff', border: '1px solid var(--line-new)', borderRadius: 12, padding: '12px 16px', fontSize: 15, outline: 'none' }}
                     placeholder="E.g., The Pearl Bistro"
+                    onFocus={e => e.currentTarget.style.borderColor = 'var(--green)'}
+                    onBlur={e => e.currentTarget.style.borderColor = 'var(--line-new)'}
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-bold text-text-dark mb-2">Email Address</label>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-new)', marginBottom: 8 }}>Email Address</label>
                   <input
                     type="email"
-                    id="email"
                     name="email"
                     required
-                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-green-primary/30 transition-all placeholder:text-gray-400"
+                    style={{ width: '100%', background: '#fff', border: '1px solid var(--line-new)', borderRadius: 12, padding: '12px 16px', fontSize: 15, outline: 'none' }}
                     placeholder="chef@example.com"
+                    onFocus={e => e.currentTarget.style.borderColor = 'var(--green)'}
+                    onBlur={e => e.currentTarget.style.borderColor = 'var(--line-new)'}
                   />
                 </div>
                 
-                {/* Identifier for Formspree to know which form this is */}
                 <input type="hidden" name="_subject" value="New Waitlist Signup!" />
 
                 <button 
                   type="submit" 
                   disabled={status === "submitting"}
-                  className="w-full bg-green-primary text-white rounded-xl px-4 py-4 font-bold text-lg hover:bg-green-primary/90 flex items-center justify-center gap-2 group transition-all disabled:opacity-70 mt-2 shadow-lg shadow-green-primary/20"
+                  className="btn btn-primary"
+                  style={{ width: '100%', justifyContent: 'center', padding: '16px', fontSize: 16, marginTop: 12 }}
                 >
                   {status === "submitting" ? "Submitting..." : "Secure My Spot"}
-                  {!status && <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
+                  {!status && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>}
                 </button>
                 
                 {status === "error" && (
-                  <p className="text-coral text-sm text-center mt-4">Oops! Something went wrong. Please try again.</p>
+                  <p style={{ color: 'var(--red)', fontSize: 14, textAlign: 'center', marginTop: 16 }}>Oops! Something went wrong. Please try again.</p>
                 )}
               </form>
             </>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
