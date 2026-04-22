@@ -222,11 +222,13 @@ export const LogoLoop = memo(
         if (seqH > 0) {
           setSeqHeight(Math.ceil(seqH));
           const viewport = containerRef.current?.clientHeight ?? parentHeight ?? seqH;
-          setCopyCount(Math.max(ANIMATION_CONFIG.MIN_COPIES, Math.ceil(viewport / seqH) + ANIMATION_CONFIG.COPY_HEADROOM));
+          const safeSeqH = Math.max(1, seqH);
+          setCopyCount(Math.min(50, Math.max(ANIMATION_CONFIG.MIN_COPIES, Math.ceil(viewport / safeSeqH) + ANIMATION_CONFIG.COPY_HEADROOM)));
         }
       } else if (seqW > 0) {
         setSeqWidth(Math.ceil(seqW));
-        setCopyCount(Math.max(ANIMATION_CONFIG.MIN_COPIES, Math.ceil(containerWidth / seqW) + ANIMATION_CONFIG.COPY_HEADROOM));
+        const safeSeqW = Math.max(1, seqW);
+        setCopyCount(Math.min(50, Math.max(ANIMATION_CONFIG.MIN_COPIES, Math.ceil(containerWidth / safeSeqW) + ANIMATION_CONFIG.COPY_HEADROOM)));
       }
     }, [isVertical]);
 
