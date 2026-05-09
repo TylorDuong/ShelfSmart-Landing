@@ -117,6 +117,7 @@ export default function Home() {
   const [previewPath, setPreviewPath] = useState("/");
   const [statsInView, setStatsInView] = useState(false);
   const [dashFullscreen, setDashFullscreen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const statsRef = useRef<HTMLDivElement | null>(null);
 
 
@@ -354,7 +355,32 @@ export default function Home() {
               Join waitlist
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
             </Link>
+            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
+              {mobileMenuOpen ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              )}
+            </button>
           </div>
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div 
+                className="mobile-menu"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <a href="#top" onClick={() => setMobileMenuOpen(false)}>Home</a>
+                <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                <a href="#how" onClick={() => setMobileMenuOpen(false)}>How it works</a>
+                <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+                <Link to="/about" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+                <Link to="/waitlist" className="mobile-cta" onClick={() => setMobileMenuOpen(false)}>Join waitlist</Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
 
