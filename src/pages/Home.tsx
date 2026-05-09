@@ -117,6 +117,7 @@ export default function Home() {
   const [previewPath, setPreviewPath] = useState("/");
   const [statsInView, setStatsInView] = useState(false);
   const [dashFullscreen, setDashFullscreen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const statsRef = useRef<HTMLDivElement | null>(null);
 
 
@@ -158,7 +159,10 @@ export default function Home() {
 
     const handleScrollNav = () => {
       if (window.scrollY < 400) {
-        navLinks.forEach(a => a.classList.remove('active'));
+        navLinks.forEach(a => {
+          if (a.getAttribute('href') === '#top') a.classList.add('active');
+          else a.classList.remove('active');
+        });
       }
     };
     window.addEventListener('scroll', handleScrollNav, { passive: true });
@@ -179,12 +183,12 @@ export default function Home() {
       anchor.addEventListener('click', handleAnchorClick);
     });
 
-    // Nav subtle shrink
-    const nav = document.querySelector('.nav-inner') as HTMLElement;
+    // Nav scroll transition
+    const navNode = document.querySelector('.nav') as HTMLElement;
     const handleNavShadow = () => {
-      if (nav) {
-        if (window.scrollY > 40) nav.style.boxShadow = '0 10px 30px rgba(14,18,16,.08)';
-        else nav.style.boxShadow = '0 4px 20px rgba(14,18,16,.04)';
+      if (navNode) {
+        if (window.scrollY > 40) navNode.classList.add('scrolled');
+        else navNode.classList.remove('scrolled');
       }
     };
     window.addEventListener('scroll', handleNavShadow, { passive: true });
@@ -341,15 +345,42 @@ export default function Home() {
               <img src={logoText} alt="ShelfSmart" style={{ height: '20px', marginLeft: '8px' }} />
             </a>
             <div className="nav-links">
+              <a href="#top" data-nav className="active">Home</a>
               <a href="#features" data-nav>Features</a>
               <a href="#how" data-nav>How it works</a>
               <a href="#pricing" data-nav>Pricing</a>
+              <Link to="/about" style={{ textDecoration: 'none', color: 'inherit' }}>About Us</Link>
             </div>
             <Link className="nav-cta" href="#waitlist" to="/waitlist">
               Join waitlist
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
             </Link>
+            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
+              {mobileMenuOpen ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              )}
+            </button>
           </div>
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div 
+                className="mobile-menu"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <a href="#top" onClick={() => setMobileMenuOpen(false)}>Home</a>
+                <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                <a href="#how" onClick={() => setMobileMenuOpen(false)}>How it works</a>
+                <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+                <Link to="/about" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+                <Link to="/waitlist" className="mobile-cta" onClick={() => setMobileMenuOpen(false)}>Join waitlist</Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
 
@@ -759,6 +790,14 @@ export default function Home() {
               <img className="brand-name-img" src={logoText} alt="ShelfSmart" style={{ height: "24px" }} />
             </a>
             <p>Inventory intelligence for modern kitchens. Made with too many late-night orders by a team of chefs and engineers.</p>
+            <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
+              <a href="https://x.com/tryshelfsmart" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--muted)', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--ink-new)'} onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'} aria-label="X (Twitter)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="https://www.linkedin.com/company/tryshelfsmart/?viewAsMember=true" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--muted)', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--ink-new)'} onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'} aria-label="LinkedIn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+            </div>
           </div>
           <div className="foot-cols">
             <div className="foot-col">
@@ -770,23 +809,14 @@ export default function Home() {
             </div>
             <div className="foot-col">
               <h5>Company</h5>
-              <a href="#">About</a>
-              <a href="#">Customers</a>
-              <a href="#">Careers</a>
+              <Link to="/about">About</Link>
               <Link to="/contact">Contact</Link>
-            </div>
-            <div className="foot-col">
-              <h5>Resources</h5>
-              <a href="#">Docs</a>
-              <a href="#">Guides</a>
-              <a href="#">Status</a>
-              <a href="#">Support</a>
             </div>
           </div>
         </div>
         <div className="foot-bottom">
           <span>© 2026 ShelfSmart Labs · <em>made for the back of house.</em></span>
-          <span>Tempe, AZ · Paris, FR · Tokyo, JP</span>
+          <span>Tempe, AZ</span>
         </div>
       </footer>
 
