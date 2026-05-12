@@ -1,0 +1,11 @@
+{
+  // Tailwind CSS v4 uses CSS-first config with custom at-rules (@theme, @utility, etc.)
+  // The built-in CSS language server doesn't know these, so we silence the false positives.
+  "css.lint.unknownAtRules": "ignore",
+
+  // Recommended: use the Tailwind IntelliSense extension for full autocomplete.
+  // Install: "bradlc.vscode-tailwindcss"
+  "editor.quickSuggestions": {
+    "strings": "on"
+  }
+}

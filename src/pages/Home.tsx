@@ -8,6 +8,7 @@ import LogoLoop from "../components/reactbits/LogoLoop";
 import RotatingText from "../components/reactbits/RotatingText";
 import ScrollVelocity from "../components/reactbits/ScrollVelocity";
 import { SiSquare, SiUbereats, SiDoordash, SiDeliveroo } from "react-icons/si";
+import SavingsCalculator from "../components/SavingsCalculator";
 
 const LiveNumber = ({ initial, isPercent = false }: { initial: number, isPercent?: boolean }) => {
   const [val, setVal] = useState(initial);
@@ -471,6 +472,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ==========================================================
+     SAVINGS CALCULATOR
+     ========================================================== */}
+      <SavingsCalculator />
 
       {/* ==========================================================
      TRUST
