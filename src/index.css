@@ -384,6 +384,28 @@
 .ss2 .hero-meta .check { width: 16px; height: 16px; border-radius: 50%; background: var(--green-soft); color: var(--green-2); display: grid; place-items: center; }
 .ss2 .hero-meta .check svg { width: 10px; height: 10px; }
 
+/* Savings teaser */
+.ss2 .savings-teaser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 36px 40px;
+  background: #fff;
+  border: 1px solid rgba(152, 209, 169, 0.5);
+  border-radius: 24px;
+  box-shadow: 0 18px 44px -24px rgba(26, 26, 26, 0.22);
+}
+.ss2 .savings-teaser .section-title { color: #1A1A1A; }
+.ss2 .savings-teaser .section-sub { color: rgba(26, 26, 26, 0.76); }
+@media (max-width: 860px) {
+  .ss2 .savings-teaser {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px 24px;
+  }
+}
+
 /* Preview */
 .ss2 .preview-wrap { margin-top: 64px; position: relative; padding: 0; }
 .ss2 .preview-wrap::before {
@@ -1387,11 +1409,11 @@
 /* ── Establishment type grid ── */
 .ss2 .sc-option-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 @media (max-width: 640px) {
-  .ss2 .sc-option-grid { grid-template-columns: repeat(2, 1fr); }
+  .ss2 .sc-option-grid { grid-template-columns: 1fr; }
 }
 .ss2 .sc-option {
   padding: 10px 8px;
@@ -1494,6 +1516,38 @@
   margin: 0;
 }
 .ss2 .sc-slider-hint strong { color: var(--sc-mint-deep); }
+
+.ss2 .sc-hurdle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .ss2 .sc-hurdle-grid { grid-template-columns: 1fr; }
+}
+.ss2 .sc-hurdle {
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  padding: 11px 12px;
+  background: #fff;
+  color: var(--ink-soft-new);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.ss2 .sc-hurdle:hover {
+  border-color: var(--sc-mint);
+  background: var(--sc-mint-soft);
+  color: var(--ink-new);
+}
+.ss2 .sc-hurdle--selected {
+  border-color: var(--sc-mint-deep);
+  background: var(--sc-mint-soft);
+  color: var(--ink-new);
+  box-shadow: 0 0 0 3px rgba(152, 209, 169, 0.22);
+}
 
 /* ── Waste cards ── */
 .ss2 .sc-waste-grid {
@@ -1673,15 +1727,17 @@
 }
 .ss2 .sc-result-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   font-size: 14px;
+  gap: 14px;
 }
 .ss2 .sc-result-label {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--ink-soft-new);
+  line-height: 1.4;
 }
 .ss2 .sc-result-label svg { color: var(--muted); flex-shrink: 0; }
 .ss2 .sc-result-val {
@@ -1713,4 +1769,24 @@
   margin: 0;
 }
 .ss2 .sc-results-note strong { color: var(--ink-new); }
+.ss2 .sc-waitlist-hook {
+  background: linear-gradient(180deg, #fff, var(--sc-mint-soft));
+  border: 1px solid rgba(152, 209, 169, 0.55);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ss2 .sc-waitlist-hook h5 {
+  margin: 0;
+  color: var(--ink-new);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.ss2 .sc-waitlist-hook p {
+  margin: 0 0 2px;
+  color: var(--ink-soft-new);
+  font-size: 13.5px;
+}
 

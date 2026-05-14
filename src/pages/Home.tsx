@@ -8,7 +8,6 @@ import LogoLoop from "../components/reactbits/LogoLoop";
 import RotatingText from "../components/reactbits/RotatingText";
 import ScrollVelocity from "../components/reactbits/ScrollVelocity";
 import { SiSquare, SiUbereats, SiDoordash, SiDeliveroo } from "react-icons/si";
-import SavingsCalculator from "../components/SavingsCalculator";
 
 const LiveNumber = ({ initial, isPercent = false }: { initial: number, isPercent?: boolean }) => {
   const [val, setVal] = useState(initial);
@@ -474,9 +473,29 @@ export default function Home() {
       </section>
 
       {/* ==========================================================
-     SAVINGS CALCULATOR
+     SAVINGS TEASER
      ========================================================== */}
-      <SavingsCalculator />
+      <section className="section" style={{ paddingTop: "28px", paddingBottom: "24px" }}>
+        <div className="container">
+          <div className="savings-teaser reveal">
+            <div>
+              <span className="section-kicker">Free ROI audit</span>
+              <h2 className="section-title" style={{ marginBottom: 10 }}>
+                How much could ShelfSmart save you?
+              </h2>
+              <p className="section-sub" style={{ marginBottom: 0, maxWidth: "58ch" }}>
+                Run a quick comprehensive audit to estimate annual labor and waste savings tailored to your kitchen profile.
+              </p>
+            </div>
+            <Link className="btn btn-primary" to="/audit">
+              Start your audit
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M13 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ==========================================================
      TRUST
