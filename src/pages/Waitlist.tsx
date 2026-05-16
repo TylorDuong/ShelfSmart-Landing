@@ -1,32 +1,33 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useForm } from "@formspree/react";
 
 export default function Waitlist() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [searchParams] = useSearchParams();
+  const [state, handleSubmit] = useForm("xpqbnwby");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const auditRestaurantName = searchParams.get("restaurantName") ?? "";
+  const auditSavings = searchParams.get("savings") ?? "";
+  const auditWage = searchParams.get("wage") ?? "";
+  const auditHours = searchParams.get("hours") ?? "";
+  const auditWasteLbs = searchParams.get("wasteLbs") ?? searchParams.get("waste") ?? "";
+  const auditPainPoints = searchParams.get("painPoints") ?? searchParams.get("hurdles") ?? "";
+  const hasAuditContext = Boolean(auditRestaurantName || auditSavings || auditWage || auditHours || auditWasteLbs || auditPainPoints);
+  const status: "idle" | "submitting" | "success" | "error" = state.succeeded
+    ? "success"
+    : state.submitting
+      ? "submitting"
+      : state.errors
+        ? "error"
+        : "idle";
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("submitting");
-
-    const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
-    if (!endpoint) {
-      console.warn("VITE_FORMSPREE_ENDPOINT is not set.");
-      setTimeout(() => setStatus("success"), 1000);
-      return;
-    }
-
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: new FormData(e.currentTarget),
-        headers: { Accept: "application/json" },
-      });
-      if (response.ok) setStatus("success");
-      else setStatus("error");
-    } catch {
-      setStatus("error");
-    }
-  };
+  useEffect(() => {
+    const queryName = searchParams.get("name") ?? searchParams.get("restaurantName");
+    const queryEmail = searchParams.get("email");
+    if (queryName) setName(queryName);
+    if (queryEmail) setEmail(queryEmail);
+  }, [searchParams]);
 
   return (
     <div className="ss2" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '40px 20px' }}>
@@ -72,6 +73,8 @@ export default function Waitlist() {
                     type="text"
                     name="name"
                     required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     style={{ width: '100%', background: '#fff', border: '1px solid var(--line-new)', borderRadius: 12, padding: '12px 16px', fontSize: 15, outline: 'none' }}
                     placeholder="E.g., The Pearl Bistro"
                     onFocus={e => e.currentTarget.style.borderColor = 'var(--green)'}
@@ -85,6 +88,8 @@ export default function Waitlist() {
                     type="email"
                     name="email"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     style={{ width: '100%', background: '#fff', border: '1px solid var(--line-new)', borderRadius: 12, padding: '12px 16px', fontSize: 15, outline: 'none' }}
                     placeholder="chef@example.com"
                     onFocus={e => e.currentTarget.style.borderColor = 'var(--green)'}
@@ -92,7 +97,19 @@ export default function Waitlist() {
                   />
                 </div>
                 
-                <input type="hidden" name="_subject" value="New Waitlist Signup!" />
+                <input type="hidden" name="_subject" value={hasAuditContext ? "New Waitlist Signup (From ROI Audit)!" : "New Waitlist Signup!"} />
+                {hasAuditContext && (
+                  <>
+                    <input type="hidden" name="restaurantName" value={auditRestaurantName || name} />
+                    <input type="hidden" name="savings" value={auditSavings} />
+                    <input type="hidden" name="wage" value={auditWage} />
+                    <input type="hidden" name="hours" value={auditHours} />
+                    <input type="hidden" name="waste" value={auditWasteLbs} />
+                    <input type="hidden" name="hurdles" value={auditPainPoints} />
+                    <input type="hidden" name="wasteLbs" value={auditWasteLbs} />
+                    <input type="hidden" name="painPoints" value={auditPainPoints} />
+                  </>
+                )}
 
                 <button 
                   type="submit" 
